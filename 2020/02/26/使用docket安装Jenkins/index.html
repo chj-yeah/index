@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Hexo</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="Hexo">
+  <title>使用docket安装Jenkins | Hexo</title>
+  <meta name="keywords" content=" docker ">
+  <meta name="description" content="使用docket安装Jenkins | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="docker官网链接;1,docker是什么？12345678Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从 Apache2.0 协议开源。Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开">
 <meta property="og:type" content="article">
@@ -53,7 +53,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/index/" class="avatar_target">
     <img class="avatar" src="/index/img/avatar.jpg" />
@@ -290,12 +290,49 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-使用docket安装Jenkins" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对博客的理解"><span class="toc-text">对博客的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于叶落阁"><span class="toc-text">关于叶落阁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
+        <h1 class="article-title">使用docket安装Jenkins</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        
+        <span class="tag">
+            
+            <a class="color2">docker</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-02-26 16:08:07'>2020-02-26 15:51</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#docker官网链接"><span class="toc-text">docker官网链接;</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#1-docker是什么？"><span class="toc-text">1,docker是什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-docker可以用来做什么？"><span class="toc-text">2,docker可以用来做什么？</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3，docker-安装"><span class="toc-text">3，docker 安装</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4，docker-使用与命令"><span class="toc-text">4，docker 使用与命令</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5，docker-Jenkins安装"><span class="toc-text">5，docker + Jenkins安装</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -308,36 +345,53 @@
     }
 </style>
 </div>
-            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="对博客的理解"><a href="#对博客的理解" class="headerlink" title="对博客的理解"></a>对博客的理解</h2><p>喜欢写Blog的人，会经历三个阶段。</p>
-<blockquote>
-<p>第一阶段，刚接触Blog，觉得很新鲜，试着选择一个免费空间来写。</p>
-</blockquote>
-<blockquote>
-<p>第二阶段，发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。</p>
-</blockquote>
-<blockquote>
-<p>第三阶段，觉得独立博客的管理太麻烦，最好在保留控制权的前提下，让别人来管，自己只负责写文章。</p>
-</blockquote>
-<p>我们每个人的在网络上产生的数据越来越多，这些信息是我们在互联网上存在过的痕迹，值得我们认真对待。但是它们被分散分布在各个网站上。很多时候我们很难将它们聚合在一起，而且各个网站的信息排布方式也没有办法自由控制，所以我们需要一个可以由自己主宰的空间——博客。</p>
-<p>通过博客，我们可以记录自己的生活和成长的轨迹。它不像 Twitter 那样碎片化，也不像 Facebook 那样关系化，它是私人的空间。</p>
-<h2 id="关于叶落阁"><a href="#关于叶落阁" class="headerlink" title="关于叶落阁"></a>关于叶落阁</h2><p><strong>叶落阁</strong> 是阿杰（杨玉杰）的个人站。</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 生成，部署在 <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank" rel="noopener">3-hexo</a> 已经在github上开源</p>
-<p>主要功能：</p>
-<ul>
-<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
-<li>pad/手机等移动端适配</li>
-<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/' target="_blank" rel="noopener">3-hexo快捷键说明</a></li>
-</ul>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="docker官网链接"><a href="#docker官网链接" class="headerlink" title="docker官网链接;"></a><a href="https://www.docker.com" target="_blank" rel="noopener">docker</a>官网链接;</h4><h4 id="1-docker是什么？"><a href="#1-docker是什么？" class="headerlink" title="1,docker是什么？"></a>1,docker是什么？</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Docker 是一个开源的应用容器引擎，基于 Go 语言 并遵从 Apache2.0 协议开源。</span><br><span class="line">Docker 可以让开发者打包他们的应用以及依赖包到一个轻量级、可移植的容器中，然后发布到任何流行的 Linux 机器上，也可以实现虚拟化。</span><br><span class="line">容器是完全使用沙箱机制，相互之间不会有任何接口（类似 iPhone 的 app）,更重要的是容器性能开销极低。</span><br><span class="line">docker组成：</span><br><span class="line"><span class="code">    Docker Client 客户端</span></span><br><span class="line"><span class="code">    Docker Daemon 守护进程</span></span><br><span class="line"><span class="code">    Docker Image 镜像</span></span><br><span class="line"><span class="code">    Docker Container 容器</span></span><br></pre></td></tr></table></figure>
 
-        </article>
-        
-        <p>
-            <a  class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
+<h4 id="2-docker可以用来做什么？"><a href="#2-docker可以用来做什么？" class="headerlink" title="2,docker可以用来做什么？"></a>2,docker可以用来做什么？</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Web 应用的自动化打包和发布。</span><br><span class="line">自动化测试和持续集成、发布。</span><br><span class="line">在服务型环境中部署和调整数据库或其他的后台应用。</span><br><span class="line">从头编译或者扩展现有的 OpenShift 或 Cloud Foundry 平台来搭建自己的 PaaS 环境。</span><br></pre></td></tr></table></figure>
+
+<h4 id="3，docker-安装"><a href="#3，docker-安装" class="headerlink" title="3，docker 安装"></a>3，docker 安装</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">1,Docker CE的安装</span><br><span class="line">yum remove -y docker \</span><br><span class="line"><span class="code">              docker-client \</span></span><br><span class="line"><span class="code">              docker-client-latest \</span></span><br><span class="line"><span class="code">              docker-common \</span></span><br><span class="line"><span class="code">              docker-latest \</span></span><br><span class="line"><span class="code">              docker-latest-logrotate \</span></span><br><span class="line"><span class="code">              docker-logrotate \</span></span><br><span class="line"><span class="code">              docker-engine</span></span><br><span class="line"><span class="code">              </span></span><br><span class="line">2,安装所需要的软件</span><br><span class="line">yum install -y yum-utils device-mapper-persistent-data lvm2</span><br><span class="line"></span><br><span class="line">3,设置Docker的存储库</span><br><span class="line">yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><br><span class="line"></span><br><span class="line">4,安装最新版Docker-ce</span><br><span class="line">yum install -y docker-ce  </span><br><span class="line"></span><br><span class="line">5,安装</span><br><span class="line">访问http://mirror.centos.org/centos/7/extras/x86_64/Packages/</span><br><span class="line">查看你要安装的版本</span><br><span class="line">wget url 等待安装........</span><br><span class="line">rpm -ivh container-selinux-2.95-2.el7_6.noarch.rpm</span><br><span class="line">yum install -y docker-ce</span><br><span class="line"></span><br><span class="line">6,启动docker</span><br><span class="line">systemctl daemon-reload &amp;&amp; systemctl start docker</span><br><span class="line"></span><br><span class="line">7,查看docker的版本 or 查看更详细的的信息</span><br><span class="line">docker version   or   docker info</span><br><span class="line"></span><br><span class="line">8,docker运行hello-world</span><br><span class="line">docker run hello-world</span><br></pre></td></tr></table></figure>
+
+
+
+<h4 id="4，docker-使用与命令"><a href="#4，docker-使用与命令" class="headerlink" title="4，docker 使用与命令"></a>4，docker 使用与命令</h4><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line">启动Docker：sudo systemctl start docker</span><br><span class="line"></span><br><span class="line">查看版本： docker version</span><br><span class="line"></span><br><span class="line">测试是否启动：sudo docker run hello-world</span><br><span class="line"></span><br><span class="line">docker ps 查看当前正在运行的容器</span><br><span class="line"></span><br><span class="line">docker ps -a 查看所有容器的状态</span><br><span class="line"></span><br><span class="line">docker start/stop id/name 启动/停止某个容器</span><br><span class="line"></span><br><span class="line">docker attach id 进入某个容器(使用exit退出后容器也跟着停止运行)</span><br><span class="line"></span><br><span class="line">docker exec -ti id 启动一个伪终端以交互式的方式进入某个容器（使用exit退出后容器不停止运行）</span><br><span class="line"></span><br><span class="line">docker images 查看本地镜像</span><br><span class="line">docker rm id/name 删除某个容器</span><br><span class="line">docker rmi id/name 删除某个镜像</span><br><span class="line"></span><br><span class="line">docker pull 镜像名  下载镜像</span><br><span class="line"></span><br><span class="line">docker run --name test -ti ubuntu /bin/bash  复制ubuntu容器并且重命名为test且运行，然后以伪终端交互式方式进入容器，运行bash</span><br><span class="line">docker build -t soar/centos:7.1 .  通过当前目录下的Dockerfile创建一个名为soar/centos:7.1的镜像</span><br><span class="line"></span><br><span class="line">docker run -d -p 2222:22 --name test soar/centos:7.1  以镜像soar/centos:7.1创建名为test的容器，并以后台模式运行，并做端口映射到宿主机2222端口，P参数重启</span><br><span class="line"></span><br><span class="line">运行交互式的容器：docker run -i -t ubuntu:15.10 /bin/bash</span><br><span class="line">-t:在新容器内指定一个伪终端或终端。</span><br><span class="line">-i:允许你对容器内的标准输入 (STDIN) 进行交互。</span><br><span class="line"></span><br><span class="line">启动容器（后台模式）：docker run -d ubuntu:15.10 /bin/sh -c "while true; do echo hello world; sleep 1; done"</span><br><span class="line">查看容器输出： docker logs ID或name</span><br><span class="line">停止容器运行： docker stop ID或name</span><br><span class="line"></span><br><span class="line">运行一个web应用：</span><br><span class="line">docker pull training/webapp  # 载入镜像</span><br><span class="line">docker run -d -P training/webapp python app.py</span><br><span class="line">-d:让容器在后台运行。</span><br><span class="line">-P:将容器内部使用的网络（ip）+端口映射到我们使用的主机上。</span><br><span class="line"></span><br><span class="line">重新启动服务：</span><br><span class="line">sudo systemctl daemon-reload</span><br><span class="line">sudo systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h4 id="5，docker-Jenkins安装"><a href="#5，docker-Jenkins安装" class="headerlink" title="5，docker + Jenkins安装"></a>5，docker + Jenkins安装</h4><p><a href="https://www.jianshu.com/p/12c9a9654f83" target="_blank" rel="noopener">Jenkins-url</a></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 jaytp@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>使用docket安装Jenkins</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-02-26, 15:51:37</p>
+    <p><span class="copy-title">最后更新:</span>2020-02-26, 16:08:07</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/02/26/%E4%BD%BF%E7%94%A8docket%E5%AE%89%E8%A3%85Jenkins/" title="使用docket安装Jenkins">http://chj-yeah.github.io/index/2020/02/26/%E4%BD%BF%E7%94%A8docket%E5%AE%89%E8%A3%85Jenkins/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
     </div>
     <div class="copyright">
         <p class="footer-entry">©2016-2019 Yelog</p>
