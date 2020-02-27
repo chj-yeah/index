@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Hexo</title>
-  <meta name="keywords" content="">
-  <meta name="description" content="Hexo">
+  <title>Netty框架源码解析 | Hexo</title>
+  <meta name="keywords" content=" Netty ">
+  <meta name="description" content="Netty框架源码解析 | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="深入剖析NIO原理  JDK1.5出现注：BIO是同步阻塞IO，NIO是同步非阻塞IO，AIO是异步非阻塞IO。 几个概念  1.阻塞与非阻塞阻塞和非阻塞是进程在访问数据的时候，数据是否准备就绪的一种处理方式，当数据没有准备的时候，阻塞往往需要等待缓冲区中的数据准备好好过后才处理其他的事情，否则一直等待在那里。非阻塞：当我们的进程访问我们的数据缓冲区的时候，如果数据没有准备好则直接返回，不会等待。">
 <meta property="og:type" content="article">
@@ -53,7 +53,7 @@
 </div>
 
 <body>
-<aside class="nav mobile">
+<aside class="nav">
     <div class="nav-left">
         <a href="/index/" class="avatar_target">
     <img class="avatar" src="/index/img/avatar.jpg" />
@@ -338,12 +338,49 @@
         </div>
     </div>
 </aside>
-<div class="post index">
+<div class="post">
     <div class="pjax">
-        <article class="index">
-            <div class="toc-ref">
+        <article id="post-Netty框架源码解析" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Why-Blog"><span class="toc-text">Why Blog</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#对博客的理解"><span class="toc-text">对博客的理解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#关于叶落阁"><span class="toc-text">关于叶落阁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#博客平台"><span class="toc-text">博客平台</span></a></li></ol></li></ol>
+        <h1 class="article-title">Netty框架源码解析</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        
+        <span class="tag">
+            
+            <a class="color1">Netty</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-02-27 11:12:48'>2020-02-27 10:21</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#深入剖析NIO原理-JDK1-5出现"><span class="toc-text">深入剖析NIO原理  JDK1.5出现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Netty的框架使用与源码解析"><span class="toc-text">Netty的框架使用与源码解析</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -356,36 +393,120 @@
     }
 </style>
 </div>
-            <h1 id="Why-Blog"><a href="#Why-Blog" class="headerlink" title="Why Blog"></a>Why Blog</h1><h2 id="对博客的理解"><a href="#对博客的理解" class="headerlink" title="对博客的理解"></a>对博客的理解</h2><p>喜欢写Blog的人，会经历三个阶段。</p>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h4 id="深入剖析NIO原理-JDK1-5出现"><a href="#深入剖析NIO原理-JDK1-5出现" class="headerlink" title="深入剖析NIO原理  JDK1.5出现"></a><strong>深入剖析NIO原理  JDK1.5出现</strong></h4><p><code>注：BIO是同步阻塞IO，NIO是同步非阻塞IO，AIO是异步非阻塞IO。</code></p>
+<p><strong>几个概念</strong></p>
 <blockquote>
-<p>第一阶段，刚接触Blog，觉得很新鲜，试着选择一个免费空间来写。</p>
+<p>1.阻塞与非阻塞<br>阻塞和非阻塞是进程在访问数据的时候，数据是否准备就绪的一种处理方式，当数据没有准备的时候，阻塞往往需要等待缓冲区中的数据准备好好过后才处理其他的事情，否则一直等待在那里。<br>非阻塞：当我们的进程访问我们的数据缓冲区的时候，如果数据没有准备好则直接返回，不会等待。如果数据已经准备好了，也直接返回。<br>2.同步与异步：与同步不一样的特点就是：一边写，一边读，同时进行。</p>
 </blockquote>
+<p><strong>BIO与NIO的对比</strong></p>
+<p>BIO一次请求（单例），用完就清除，效率低，压力大。</p>
+<p>NIO的服务端采用多路复用技术（selector）轮询机制（排队取号），缓冲区。    </p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>BIO</th>
+<th>NIO</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>方式</td>
+<td>从硬盘到内存</td>
+<td>从内存到硬盘</td>
+</tr>
+<tr>
+<td>通信</td>
+<td>面向流（乡村公路）</td>
+<td>面向缓冲（高速公路，多路复用技术）</td>
+</tr>
+<tr>
+<td>处理</td>
+<td>阻塞IO（多线程）</td>
+<td>非阻塞IO（反应堆Reactor）</td>
+</tr>
+<tr>
+<td>触发</td>
+<td>无</td>
+<td>选择器（轮询机制）</td>
+</tr>
+</tbody></table>
+<p><strong>缓冲区 Buffer</strong></p>
 <blockquote>
-<p>第二阶段，发现免费空间限制太多，就自己购买域名和空间，搭建独立博客。</p>
+<p><code>缓冲区实际上是一个容器对象，其实就是一个数组，封装成的java类</code>。</p>
+<p>buffer.flip()方法不会覆盖固定以前的数据，实现数据读写分离。</p>
+<p>切片：子缓冲区 buffer.slice()方法。</p>
+<p><code>规则：0&lt;= position &lt;= limit &lt;= capacity</code></p>
+<p>只读缓冲区；</p>
+<p>直接缓冲区：直接调用c语言模块，最底层的从操作系统中直接分配内存。</p>
 </blockquote>
+<p><strong>通道 Channel</strong></p>
+<p><code>Channel是一个对象，通过它可以读取和写入说话间，当然所有数据都是通过Buffer对象来处理的</code></p>
+<p><strong>反应堆 Reactor</strong></p>
 <blockquote>
-<p>第三阶段，觉得独立博客的管理太麻烦，最好在保留控制权的前提下，让别人来管，自己只负责写文章。</p>
+<p>1.由一个专门的线程来处理所有的IO事件并负责分发。<br>2.事件驱动机制：事件到的时候触发，而不是同步的去监视事件。<br>3.线程通讯：线程之间通过wait,notify等方式通讯，保证每次上下文切换都是有意义的。</p>
 </blockquote>
-<p>我们每个人的在网络上产生的数据越来越多，这些信息是我们在互联网上存在过的痕迹，值得我们认真对待。但是它们被分散分布在各个网站上。很多时候我们很难将它们聚合在一起，而且各个网站的信息排布方式也没有办法自由控制，所以我们需要一个可以由自己主宰的空间——博客。</p>
-<p>通过博客，我们可以记录自己的生活和成长的轨迹。它不像 Twitter 那样碎片化，也不像 Facebook 那样关系化，它是私人的空间。</p>
-<h2 id="关于叶落阁"><a href="#关于叶落阁" class="headerlink" title="关于叶落阁"></a>关于叶落阁</h2><p><strong>叶落阁</strong> 是阿杰（杨玉杰）的个人站。</p>
-<p>到目前为止已经写了<code class="article_number"></code>篇文章， 共<code class="site_word_count"></code>字。</p>
-<p>本站访问人数：<code class="site_uv"></code>人次 ， 访问量：<code class="site_pv"></code>次</p>
-<h2 id="博客平台"><a href="#博客平台" class="headerlink" title="博客平台"></a>博客平台</h2><p>这个博客通过 <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> 生成，部署在 <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a>，主题 <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank" rel="noopener">3-hexo</a> 已经在github上开源</p>
-<p>主要功能：</p>
-<ul>
-<li>搜索支持文章标题、标签(#标签)、作者(@作者)</li>
-<li>pad/手机等移动端适配</li>
-<li>页面全局快捷键 <a href='http://yelog.org/2017/03/24/3-hexo-shortcuts/' target="_blank" rel="noopener">3-hexo快捷键说明</a></li>
-</ul>
+<p><strong>选择器 selector</strong>  触发事件（轮询机制）</p>
+<p><code>反应堆的处理者来操作数据等待，读，写动作。</code></p>
+<h4 id="Netty的框架使用与源码解析"><a href="#Netty的框架使用与源码解析" class="headerlink" title="Netty的框架使用与源码解析"></a><strong>Netty的框架使用与源码解析</strong></h4><p><code>Netty是一个高性能异步事件驱动的NIO框架，它提供了对TCP,UDP和文件传输的支持，作为一个异步NIO框架，Netty的所有IO操作都是异步非阻塞的，通过Future-Listener机制，用户可以方便的主动获取或者通知机制获得IO操作结果</code></p>
+<p><strong>序列化方式问题</strong></p>
+<blockquote>
+<p>1.java序列化机制是java内部的一种对象编解码技术无法跨语言使用。<br>2.相比于其他开源的序列化框架，java序列化的码流太大，无论是网络传输还是持久化到磁盘都会导致额外的资源占用。<br>3.序列化性能差（CPU资源占用高）。</p>
+</blockquote>
+<p><code>高性能的3个主题：传输，协议，线程</code></p>
+<p><strong>Netty高性能之道</strong>     <code>异步非阻塞通信</code></p>
+<blockquote>
+<p>在IO编辑过程中，当要同时处理多个客户端接入请求时，当要同时处理多个客户端接入请求时，可以利用多线程或者IO多路复用技术进行处理，IO多路复用技术通过把多个IO的阻塞复用到同一个select的阻塞上，从而使得系统在单线程的情况下，可以同时处理多个客户端请求。<br>优势：系统开销小，不需要创建新的额外进程或者线程，也不需要维护线程与进程的运行，降低了系统的维护工作量，节省了系统资源。</p>
+</blockquote>
+<p><strong>Netty的零拷贝主要体现3个方面</strong></p>
+<blockquote>
+<p>1.Netty的接收和发送使用堆外直接内存进行Socket读写，不需要进行字节缓冲区的二次拷贝（跳过JVM）。<br>2.Netty提供组合对象，可以聚合多个ByteBuffer对象,用户1可以像操作一个Buffer那样方便的对组合Buffer进行操作，避免了传统通过内存拷贝的方式将几个小Buffer合并成一个大Buffer。<br>3.Netty的文件传输采用了ttansferTo方法，它可以直接将文件缓冲区的数据发送都目标Chanal,避免了传统通过循环write方式导致的内存拷贝问题。</p>
+</blockquote>
+<p><strong>线程池高效的Reactor线程模型</strong></p>
+<p><code>1.Reactor单线程模型，2.Reactor多线程模型，3.主从Reactor多线程模型</code></p>
+<blockquote>
+<p>服务端主推的是主从多线程模型在Netty中，Boss线程管理多个work线程（epoll模型设计思想），达到资源的合理利用最大化。</p>
+</blockquote>
+<p><strong>无锁化的串行设计理念</strong></p>
+<blockquote>
+<p>在一次完整过程，保证一个线程中多个子线程不保证前后顺序的，单个通道下所有的业务逻辑处理都是有顺序的，可控的（每个逻辑都是一个线程），多通道之间是互不干扰的，并行的。</p>
+</blockquote>
+<p><strong>总结：通过对Netty的架构和性能模型进行分析，我们发现Netty架构的高性能是被精心设计和实现的，有着高质量的架构和代码，Netty支持10wTRS的跨节点服务调用并不是件十分困难的事情</strong></p>
 
-        </article>
-        
-        <p>
-            <a  class="dashang" onclick="dashangToggle()">赏</a>
-        </p>
-        
-        
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 jaytp@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>Netty框架源码解析</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-02-27, 10:21:36</p>
+    <p><span class="copy-title">最后更新:</span>2020-02-27, 11:12:48</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/02/27/Netty%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/" title="Netty框架源码解析">http://chj-yeah.github.io/index/2020/02/27/Netty%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
     </div>
     <div class="copyright">
         <p class="footer-entry">©2016-2019 Yelog</p>

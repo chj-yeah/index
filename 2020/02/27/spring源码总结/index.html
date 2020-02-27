@@ -1,0 +1,915 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Spring源码解析 | Hexo</title>
+  <meta name="keywords" content=" Spring ">
+  <meta name="description" content="Spring源码解析 | Hexo">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="深入剖析NIO原理  JDK1.5出现注：BIO是同步阻塞IO，NIO是同步非阻塞IO，AIO是异步非阻塞IO。 几个概念  1.阻塞与非阻塞阻塞和非阻塞是进程在访问数据的时候，数据是否准备就绪的一种处理方式，当数据没有准备的时候，阻塞往往需要等待缓冲区中的数据准备好好过后才处理其他的事情，否则一直等待在那里。非阻塞：当我们的进程访问我们的数据缓冲区的时候，如果数据没有准备好则直接返回，不会等待。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Netty框架源码解析">
+<meta property="og:url" content="http://chj-yeah.github.io/index/2020/02/27/Netty%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="深入剖析NIO原理  JDK1.5出现注：BIO是同步阻塞IO，NIO是同步非阻塞IO，AIO是异步非阻塞IO。 几个概念  1.阻塞与非阻塞阻塞和非阻塞是进程在访问数据的时候，数据是否准备就绪的一种处理方式，当数据没有准备的时候，阻塞往往需要等待缓冲区中的数据准备好好过后才处理其他的事情，否则一直等待在那里。非阻塞：当我们的进程访问我们的数据缓冲区的时候，如果数据没有准备好则直接返回，不会等待。">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-02-27T02:21:36.000Z">
+<meta property="article:modified_time" content="2020-02-27T03:12:48.418Z">
+<meta property="article:author" content="陈汉杰">
+<meta property="article:tag" content="Netty">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/index/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/index/css/hl_theme/atom-light.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/index/js/jquery.autocomplete.min.js?v=1.0.1" ></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/index/js/iconfont.js?v=1.0.1" ></script>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value="/index">
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/index/" class="avatar_target">
+    <img class="avatar" src="/index/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>陈汉杰</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="github" href="https://github.com/yelog" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="facebook" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-facebook"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+        <a title="instagram" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-instagram"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="reddit" href="https://www.reddit.com/user/yelog/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-reddit"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="weibo" href="http://weibo.com/u/2307534817" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-weibo"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="jianshu" href="https://www.jianshu.com/u/ff56736de7cf" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-jianshu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="zhihu" href="https://www.zhihu.com/people/jaytp/activities" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-zhihu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="oschina" href="https://my.oschina.net/yelog" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-oschina"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:jaytp@qq.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=872336115&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="kugou" href="https://www.kugou.com/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-kugou"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=88151013" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(6)</small></div></li>
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="6">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="http://yelog.org/">叶落阁</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode === 13){return false;}">
+        <input id="local-search-input" class="search" type="text" placeholder="Search..." />
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a class="color5">java</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color1">Netty</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color3">mybatis</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">Spring</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">docker</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class=""
+           href="/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"
+           data-tag="java"
+           data-author="" >
+            <span class="post-title" title="HashMap源码解析">HashMap源码解析</span>
+            <span class="post-date" title="2020-02-26 16:21:36">2020/02/26</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/24/hello-world/"
+           data-tag=""
+           data-author="" >
+            <span class="post-title" title="Hello World">Hello World</span>
+            <span class="post-date" title="2020-02-24 13:16:20">2020/02/24</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/Netty%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"
+           data-tag="Netty"
+           data-author="" >
+            <span class="post-title" title="Netty框架源码解析">Netty框架源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/mybatis%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/"
+           data-tag="mybatis"
+           data-author="" >
+            <span class="post-title" title="mybatis源码解析">mybatis源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/spring%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/"
+           data-tag="Spring"
+           data-author="" >
+            <span class="post-title" title="Spring源码解析">Spring源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/26/%E4%BA%86%E8%A7%A3docket%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E4%BD%BF%E7%94%A8/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="了解docket的原理和使用">了解docket的原理和使用</span>
+            <span class="post-date" title="2020-02-26 15:51:37">2020/02/26</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-spring源码总结" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">Spring源码解析</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        
+        <span class="tag">
+            
+            <a class="color2">Spring</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-02-27 11:13:13'>2020-02-27 10:21</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#Spring源码解析-3-2-6版"><span class="toc-text">Spring源码解析 -3.2.6版</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#核心包"><span class="toc-text">核心包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#spring核心要义：简化"><span class="toc-text">spring核心要义：简化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#ioc运行步骤"><span class="toc-text">ioc运行步骤 :</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#IOC容器的依赖注入-DI"><span class="toc-text">IOC容器的依赖注入( DI )</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#回顾-IOC与DI的关系"><span class="toc-text">回顾 IOC与DI的关系</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AOP设计原型及具体实践"><span class="toc-text">AOP设计原型及具体实践</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#表达式：execution详细说明"><span class="toc-text">表达式：execution详细说明</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AOP能干嘛"><span class="toc-text">AOP能干嘛?</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解析AOP"><span class="toc-text">解析AOP</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AOP流程"><span class="toc-text">AOP流程</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-JDBC-的设计原型和解析"><span class="toc-text">Spring JDBC 的设计原型和解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#比较框架"><span class="toc-text">比较框架</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Spring-MVC-的设计原型和解析"><span class="toc-text">Spring MVC 的设计原型和解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#三层架构与MVC的区别"><span class="toc-text">三层架构与MVC的区别</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#解析"><span class="toc-text">解析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#springMVC的优化"><span class="toc-text">springMVC的优化</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#strus2和springMVC的对比"><span class="toc-text">strus2和springMVC的对比</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#spring事务"><span class="toc-text">spring事务</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#数据库操作原理"><span class="toc-text">数据库操作原理</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#事务传播属性："><span class="toc-text">事务传播属性：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#spring事务源码解析"><span class="toc-text">spring事务源码解析</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h2 id="Spring源码解析-3-2-6版"><a href="#Spring源码解析-3-2-6版" class="headerlink" title="Spring源码解析 -3.2.6版"></a>Spring源码解析 -3.2.6版</h2><h3 id="核心包"><a href="#核心包" class="headerlink" title="核心包"></a><strong>核心包</strong></h3><blockquote>
+<p>1.spring-bean.jar  定义的是规范<br>2.spring-context.jar 工厂的实现，DI的实现（工厂实现，工厂扩展）<br>3.spring-core.jar 是最顶层的，所有的项目都是要依赖（核心工具包）<br>4.spring-AOP.jar 是切面的上层建筑（包装了 spring-aspects.jar ）<br>5.spring-aspects.jar 切面 jar 包</p>
+</blockquote>
+<h4 id="spring核心要义：简化"><a href="#spring核心要义：简化" class="headerlink" title="spring核心要义：简化"></a>spring核心要义：简化</h4><blockquote>
+<p>1.spring JDBC –&gt; 解决dao层<br>2.spring AOP –&gt; 解决多模块开发解耦的问题<br>3.spring mvc –&gt; 解决页面交互问题</p>
+</blockquote>
+<p><strong>IOC中使用的模式</strong> ： 工厂，代理，单例，委派，原型，模板。</p>
+<p>入口：classpathxmlApplicationCantext类中，最终为一个<strong>beanFactory</strong>;</p>
+<p>1,读取配置文件（工厂模式）：获取一个spring souvce 的加载器用于读入 springBean定义资源文件； 方法为getResourePatternResolver();方法为资源加载器。</p>
+<p>2,继承ApplicationContextAware拿到 <strong>IOC容器</strong>（单例）。</p>
+<p>​             <strong>在spring框架里面，只要是以do开头的方法都是具体干活的方法</strong></p>
+<p><strong>实现分类抽象的载入Bean定义方法：</strong></p>
+<blockquote>
+<p>1.创建 xmlBeanDefinitionReader ,即创建Bean读取器，并通过回调设置回容器中去，容器使用读取器。<br>2.为 Bean读取器设置SAX Xml 解析器DOM4J。<br>3.当 Bean读取器读取 Bean 定义的xml资源文件时，启动 Xml 的校验机制。4. Bean读取器真正实现加载的方法：loaddBeanDefinitions( bean )。</p>
+</blockquote>
+<h4 id="ioc运行步骤"><a href="#ioc运行步骤" class="headerlink" title="ioc运行步骤 :"></a><strong>ioc运行步骤</strong> :</h4><p>​                        <code>工厂（标准化输出产品 HashMap）容器</code></p>
+<blockquote>
+<p>IOC容器存储器：FactoryBeanRegistrySupport类名<br>Map&lt;String,Object&gt; factoryBeanObjectCache = new ConCurrentHashMap&lt;String,Object&gt;(16);<br>1.定位资源（定位查找配置文件）<br>2.加载（加载已找到配置文件）<br>3.注册（已经记载的配置文件解析出来，并封装成BeanDefinition）对Bean的说明，bean还没有真正的产生。</p>
+<blockquote>
+<p>定位得到一个Resource;<br>加载得到一个BeanDefinition;<br>注册到Register中;</p>
+</blockquote>
+</blockquote>
+<p>加载</p>
+<blockquote>
+<p>核心：doloadBeanDefinitioons方法，读取过程：基本采用InputStream中得到XML的解析源，类名为：XmlBeanDefinitions<br>定位-&gt;加载：doloadBeanDefinitions方法里<br>1.将xml文件转换为DOM对象解析过程由documentloader实现。<br>2.启动时对Bean的定义解析的详细过程，该解析过程会用到Spring的Beean配置规则。</p>
+</blockquote>
+<p>解析</p>
+<blockquote>
+<p>核心：ImportBeanDefinitionResouce:<br>1.解析import导入元素,从给定的导入路径加载Bean定义资源到SpringIOC容器中。其做事的是：解析XML文件中的Beans。bean,alias,import, 将Bean元素中的配置信息设置到BeanDefinition中作为记录，当依赖注入使用这些记录信息创建和实例化具体的Bean对象。</p>
+</blockquote>
+<p>注册</p>
+<blockquote>
+<p>核心：registterBeannDefinition方法：<br>将解析的BeanDefinitionHold注册到容器中；<br>亲测：IOC容器也是一个MAP</p>
+</blockquote>
+<h4 id="IOC容器的依赖注入-DI"><a href="#IOC容器的依赖注入-DI" class="headerlink" title="IOC容器的依赖注入( DI )"></a><strong>IOC容器的依赖注入( DI )</strong></h4><p><strong>注：用户使用getBean获取Bean开始触发</strong></p>
+<blockquote>
+<p>核心方法：doGetBean方法<br>1.判断是否为单例<br>2.有相互注入关系的实例化<br>3.Bean定义还可以扩展为指定其生命周期范围</p>
+</blockquote>
+<p>  <strong>createBean创建Bean实例方法</strong></p>
+<blockquote>
+<p>类名：AbstracttAutowireCapableBeanFactory<br>注：如果bean定义中没有方法覆盖，则就不需要CaLLB父类的方法。<br>如果找不到构造方法且没有工厂方法，则使用JDK的反射机制，判断要实例化的Bean是否是接口。<br>查找对autowire自动装配的处理，根据Bean名称自动装配注入，applyPropertyvalues解析并注入依赖属性的过程。<br>上述代码可以发现对属性注入过程分以下两种情况：<br>1.属性值类型不需要转换时，不需要解析属性值，直接准备进行依赖注入。<br>2.属性需要进行类型转换时，如对其他对象的引用等，首先需要解析属性值，然后对其解析后的属性值进行依赖注入。</p>
+</blockquote>
+<p>依赖注入流程</p>
+<blockquote>
+<p>1.获取BeanDefinition信息<br>2.调用Factory的createBean方法，createBeanlnstance根据情况可能用JDK代理，CGlib依赖关系，类型有：list,Array,Map,Set…..<br>3.poulatteBean注入做类型转换，以上步骤完成放入真正的IOC容器中(factoryBeanObjectCache)中。spring IOC 容器是一个很方便的特性，可以简化开发是的配置。</p>
+</blockquote>
+<h4 id="回顾-IOC与DI的关系"><a href="#回顾-IOC与DI的关系" class="headerlink" title="回顾 IOC与DI的关系"></a>回顾 <strong>IOC与DI</strong>的关系</h4><blockquote>
+<p>IOC<br>1.定位资源；<br>2.载入（读取配置文件）；<br>3.注册（把加载以后的配置文件解释成BeanDefinition）；<br>依赖注入<br>1.读取BeanDefinition中信息，获得其依赖关系，封装成BeanWappper<br>2.实例化（代理对象，注入·设值）</p>
+</blockquote>
+<p><strong>DI 的高级特性（优化）</strong></p>
+<blockquote>
+<p>容器初始化方法:refresh()<br>1.为了类型匹配，停止使用临时的类加载beanFactory.setTempClassloader()<br>2.缓存容器找所有注册的BeanDefinition元数据，以防被修改，beanfactoryFreezeConfiguration<br>3.对配置了lazy-init属性的单态模式Bean进行预实例化处理，BeanFactory.preInstantiateSingletons()<br>解释:保证必须多线程同步，以确保数据一致性。</p>
+</blockquote>
+<hr>
+<h3 id="AOP设计原型及具体实践"><a href="#AOP设计原型及具体实践" class="headerlink" title="AOP设计原型及具体实践"></a><strong>AOP设计原型及具体实践</strong></h3><p>相关概念</p>
+<blockquote>
+<p>1.切面（Aspect）<br>2.连接点（Joinpoint）<br>3.切入点（Pointaut）<br>4.目标对象（Target Object）  独有的方法拦截器<br>5.AOP代理<br>6.通知 ：前置，后置，返回后，环绕，抛出异常<br>注: 版本在2.2.6之后出现声明式注解编写</p>
+</blockquote>
+<h5 id="表达式：execution详细说明"><a href="#表达式：execution详细说明" class="headerlink" title="表达式：execution详细说明"></a><strong>表达式：execution详细说明</strong></h5><blockquote>
+<p>1.方法签名的所有信息<br>2.具体的方法就是切点<br>3.表达式就是定义一个具体的方法<br>4.final修饰的方法不能被代理</p>
+</blockquote>
+<h5 id="AOP能干嘛"><a href="#AOP能干嘛" class="headerlink" title="AOP能干嘛?"></a><strong>AOP能干嘛?</strong></h5><blockquote>
+<p>1.authentication权限；<br>2.caching 缓存；<br>3.Debugging 调试；<br>4.logging 日志；<br>5.Transaction Manager 事务；<br>6.Mointer 监听；<br>7.Intercepter 拦截器；<br>8.context Passsing 内容出传递；</p>
+</blockquote>
+<h5 id="解析AOP"><a href="#解析AOP" class="headerlink" title="解析AOP"></a><strong>解析AOP</strong></h5><blockquote>
+<p>1.spring-AOP包它是以spring-beans这个包作为依赖的。<br>2.AOP工厂生产出来的Bean是可以放在IOC容器中<br>入口：ProxyFactory.getProxy执行操作流程：<br>只要在IOC加载成功后，能够拿到IOC容器的引用，直接从IOC容器中取出需要被二次操作的所有对象。<br>切点:转换成Methodlnterceptor 保存到一个容器里面，这个容器是个链表结构，一定是有顺序的，‘它是知道它的上一个是谁，下一个是谁的’ 。切点是一个链表结构操作的一种比较经典的方式（拦截器操作）。</p>
+</blockquote>
+<h5 id="AOP流程"><a href="#AOP流程" class="headerlink" title="AOP流程"></a><strong>AOP流程</strong></h5><blockquote>
+<p>1.加载配置AOP的配置文件，解析成AopConfig<br>2.交给AopProxyFactory调用一个createAopProxy的方法<br>3.JDKDynamicAopPorxy调用方法，得到方法拦截器链，并保持到一个List容器中<br>4.递归执行拦截器方法proceed方法</p>
+</blockquote>
+<hr>
+<h3 id="Spring-JDBC-的设计原型和解析"><a href="#Spring-JDBC-的设计原型和解析" class="headerlink" title="Spring JDBC 的设计原型和解析"></a><strong>Spring JDBC 的设计原型和解析</strong></h3><p>  <strong>注：</strong>封装了 JDBC 操作的一个框架,必须依赖spring,本身就是基于模板模式来开发的。</p>
+<p>  <strong>主线: JdbcTemplate</strong>     &lt;只读事务和增删改操作事务&gt;</p>
+<p>流程</p>
+<blockquote>
+<p>1.加载驱动类<br>2.获取连接（被封装到DataSoure里面）<br>3.创建语句集（预处理语句集合标准语句集）<br>4.执行语句集（执行事务操作）<br>5.获取结果集（如是增删改操作拿到一个int值，影响行数。如果是查询就拿到一个ResutSet）</p>
+</blockquote>
+<h5 id="比较框架"><a href="#比较框架" class="headerlink" title="比较框架"></a><strong>比较框架</strong></h5><blockquote>
+<p>MyBatis是一个半自动的ORM框架<br>优点：1.轻量级，性能好；2.sql和java代码实现分离<br>Hibernate是一个全自动的ORM框架<br>优点：1.API丰富，可以实现无SQL操作和HQL两次操作（兼容所有的数据库和多表查询）；2.ORM全自动化<br>SpringJDBC是一个手动的ORM框架</p>
+</blockquote>
+<hr>
+<h3 id="Spring-MVC-的设计原型和解析"><a href="#Spring-MVC-的设计原型和解析" class="headerlink" title="Spring MVC 的设计原型和解析"></a><strong>Spring MVC 的设计原型和解析</strong></h3><h5 id="三层架构与MVC的区别"><a href="#三层架构与MVC的区别" class="headerlink" title="三层架构与MVC的区别"></a><strong>三层架构与MVC的区别</strong></h5><blockquote>
+<p>架构：</p>
+<p>dao数据访问层。</p>
+<p>service业务处理层。</p>
+<p>web层（J2EE的内容Request 和 Response）。</p>
+<p>MVC:  model 。view。controller。（MVC框架只是web的一种）</p>
+</blockquote>
+<h5 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h5><blockquote>
+<p>1.web.xml配置一个DispatcherServet(启动入口)<br>2.默认加载IOC容器（ApplicationContext）<br>3.开始扫描springMVC的配置，扫描注解，view配置，插件（拦截器，转换器，视图解析器）<br>4.解析成一个HandlenMapping的list,主要是保存方法和具体的执行方关系。<br>核心：dipatcherServlet.doservice方法里面的核心方法doDipath();</p>
+<p><code>只要是IOC容器启动完成，MVC就会初始化调用onRefresh()方法有如下：</code><br>1.请求解析；2.多语言国际化；3.view层；4.解析url和Method的关联关系；5.适配器；6.异常解析；<br>7.视图转发（根据四条腿名字匹配到一个具体模板）；<br>8.解析模板中的内容（拿到服务器传过来的数据，生成HTML代码）；</p>
+</blockquote>
+<h5 id="springMVC的优化"><a href="#springMVC的优化" class="headerlink" title="springMVC的优化"></a><strong>springMVC的优化</strong></h5><p><code>1.controller保持单例这样减少创建对象和回收的开销，避免线程安全问题。</code></p>
+<h5 id="strus2和springMVC的对比"><a href="#strus2和springMVC的对比" class="headerlink" title="strus2和springMVC的对比"></a><strong>strus2和springMVC的对比</strong></h5><blockquote>
+<p>1.strus2需要针对每个request进行封装把请求等service生命周期的变量封装成一个map提供给Action使用，并保证线程安全，所有事比较耗费内存的。<br>2.strus2是用户来配置文件量比较大，mvc是有aop是比较好的。</p>
+</blockquote>
+<hr>
+<h3 id="spring事务"><a href="#spring事务" class="headerlink" title="spring事务"></a><strong>spring事务</strong></h3><p><code>注：查询没有事务，增删改才会有默认事务。</code></p>
+<p>​        属性： 原子性，一致性，隔离性，持久性</p>
+<blockquote>
+<p>1.增删改会导致数据发生变化<br>2.主要用来保证数据1酷操作的一致性（执行单元），整体要么全成功，要么全失败</p>
+</blockquote>
+<h5 id="数据库操作原理"><a href="#数据库操作原理" class="headerlink" title="数据库操作原理"></a>数据库操作原理</h5><blockquote>
+<p>做增删改的操作数据库是内存原理相当于是放在内存中的虚拟表（临时表）在尝试原型表中是否可操作，会导致数据库锁（表级锁，行级锁，锁住数据），可操作复制一份到原型表中，删除临时表返回影响行数。<br>删除操作：delete from 表名 where id = 1<br>1.先根据条件从原始表中查询来满足条件数据行<br>2.将数据行复制一份到临时表（数据库表锁住，不让其他操作执行）<br>3.执行删除，如果出现错误，原来数据原封不动，清空本次条件的记录返回错误码<br>4.如果执行成功，真正的干掉原始表中的记录，返回影响的行数</p>
+<p>数据库隔离级别：<br>1.脏读：存在修改与查找时，当用户修改放入临时表中，但未提交，另一个事务读取来提交的数据，这时两次读取的数据不一致。<br>2.不可重复读：一个事务中发生了两次操作，第一次读操作和第二次操作之间，另外一个事务对数据进行了修改，这时候两次读取的数据是不一致的。<br>3.幻读:第一次事务对一定范围的数据进行批量修改，第二个事务在这个范围增加一条数据，这时候第一个事务就会丢失对新增数据的修改。</p>
+</blockquote>
+<p><code>spring对事务是利用切面编程（aop）来实现对某一类方法进行事务统一管理（声明事务）。</code></p>
+<h5 id="事务传播属性："><a href="#事务传播属性：" class="headerlink" title="事务传播属性："></a>事务传播属性：</h5><h5 id="spring事务源码解析"><a href="#spring事务源码解析" class="headerlink" title="spring事务源码解析"></a>spring事务源码解析</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">入口类：TxNamespaceHandler 最终调用了AOP的方法拦截器</span><br><span class="line">TransactionManager的接口PlatformTransactionManager操作事务</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p>——————————————————面试问题—————————————————————-</p>
+<p>1.oop编程思想</p>
+<p>2.过滤器只是我们J2EE标准，在J2EE标准中是没有拦截器这个概念的。</p>
+<p>3.springAOP动态代理有哪些实现方法？主要有两种：JDKProxy和CGlib</p>
+<p>4.springBean什么时候被垃圾回收？spring运行的时候，实际上都是普通的java类(包括代理以后的类)都要被我们ClassLoad加载进来，它都由我们的GC机制统一回收。</p>
+<p>GC机制是什么情况回收的？1.类指针丢失，过一段时间自动回收。2.手动置空，也会被回收（设置成null）。</p>
+<p>5.分布式事务真正的处理是？</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1.只要实现了动态切换数据源，就可以达到回滚目地了。（ThreadLocal）</span><br><span class="line">2.每一步提交都是异步，然后把操作的内容写到日志中，一旦发现某一步出错，通过分析日志文件同样能够将数据回滚。</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 jaytp@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>Spring源码解析</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-02-27, 10:21:36</p>
+    <p><span class="copy-title">最后更新:</span>2020-02-27, 11:13:13</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/02/27/spring%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/" title="Spring源码解析">http://chj-yeah.github.io/index/2020/02/27/spring%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2016-2019 Yelog</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close"  onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/index/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/index/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/index/js/jquery.pjax.js?v=1.0.1" ></script>
+
+<script src="/index/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#java','#Netty','#mybatis','#Spring','#docker',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: #fafafa;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+        .nav .hide-list.fullscreen {
+            left: 492px
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        background: url("/indexhttps://i.loli.net/2019/07/22/5d3521411f3f169375.png");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
