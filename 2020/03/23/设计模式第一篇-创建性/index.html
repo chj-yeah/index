@@ -13,13 +13,13 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="设计模式详解GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁 行为性(Behavioral)13.策略模式(Strategy)定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。 策略模式使用的就是面向对象">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="http://chj-yeah.github.io/index/img/image/1586156669961.png">
+<meta property="og:image" content="http://chj-yeah.github.io/index/img/image/designMode/1586156669961.png">
 <meta property="article:published_time" content="2020-03-25T07:13:47.000Z">
-<meta property="article:modified_time" content="2020-05-12T06:22:48.031Z">
+<meta property="article:modified_time" content="2020-05-12T09:04:43.605Z">
 <meta property="article:author" content="陈汉杰">
 <meta property="article:tag" content="设计模式">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://chj-yeah.github.io/index/img/image/1586156669961.png">
+<meta name="twitter:image" content="http://chj-yeah.github.io/index/img/image/designMode/1586156669961.png">
 
 
 <link rel="icon" href="/img/avatar.jpg">
@@ -414,7 +414,7 @@
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-05-12 14:14:42'>2020-03-23 15:13</time>
+        创建时间:<time class="date" title='更新时间: 2020-05-12 17:04:59'>2020-03-23 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -476,11 +476,11 @@
 <p>抽象工厂模式(Abastract Factory Pattern )是指提供一个创建一系列相关或相互依赖对象的接口， 无须指定他们具体的类。客户端（应用层）不依赖于产品类实例如何被创建、实现等细节，强调的是一 系列相关的产品对象（属于同一产品族<strong>）</strong>一起使用创建对象需要大量重复的代码。需要提供一个产品类 的库，所有的产品以同样的接口出现，从而使客户端不依赖于具体实现。</p>
 </blockquote>
 <p>讲解抽象工厂之前，我们要了解两个概念产品等级培构和产品族，看下面的图：</p>
-<p><img src="/index/img/image/wps1.png" alt="img"> </p>
+<p><img src="/index/img/image/designMode/wps1.png" alt="img"> </p>
 <p>产品等级结构</p>
 <p>从上图中看出有正方形，圆形和菱形三种图形，相同颜色深浅的就代表同一个产品族，相同形状的代表 同一个产品等级结构。同样可以从生活中来举例，比如，美的电器生产多种家用电器。那么上图中，颜 色最深的正方形就代表美的洗衣机、颜色最深的圖形代表美的空调、颜色最深的菱形代表美的热水器, 颜色最深的一排都属于美的品牌，都是美的电器这个产品族。再看最右侧的菱形，颜色最深的我们指定 了代表美的热水器，那么第二排颜色稍微浅一点的菱形，代表海信的热水器。同理，同一产品结构下还 有格力热水器，格力空调，格力洗衣机。</p>
 <p>再看下面的这张图，最左侧的小房子我们就认为具体的工厂,有美的工厂,有海信工厂,有格力工厂。 每个品牌的工厂都生产洗衣机、热水器和空调。</p>
-<p><img src="/index/img/image/wps2.png" alt="img"> </p>
+<p><img src="/index/img/image/designMode/wps2.png" alt="img"> </p>
 <p>通过上面两张图的对比理解，相信大家对抽象工厂有了非常形象的理解。</p>
 <h3 id="3-单例模式-Singleton"><a href="#3-单例模式-Singleton" class="headerlink" title="3.单例模式(Singleton)"></a>3.单例模式(Singleton)</h3><h4 id="单例模式的定义和应用场景"><a href="#单例模式的定义和应用场景" class="headerlink" title="单例模式的定义和应用场景"></a>单例模式的定义和应用场景</h4><blockquote>
 <p>单例模式是指确保一个类在任何情况下都绝对只有一个实例，并提供<br>一个全局访问点.单例模式是创建型模式。</p>
@@ -556,7 +556,7 @@
     
     <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
     <p><span class="copy-title">发布时间:</span>2020-03-23, 15:13:47</p>
-    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:14:42</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-12, 17:04:59</p>
     <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/03/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%88%9B%E5%BB%BA%E6%80%A7/" title="设计模式第一篇-创建性">http://chj-yeah.github.io/index/2020/03/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%88%9B%E5%BB%BA%E6%80%A7/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
