@@ -414,7 +414,7 @@
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-05-12 14:20:57'>2020-03-24 15:13</time>
+        创建时间:<time class="date" title='更新时间: 2020-05-12 14:28:36'>2020-03-24 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -510,7 +510,7 @@
 <p>(4)    编译新生成的Java代码.class文件.</p>
 <p>(5)    重新加载到JVM中运行.</p>
 </blockquote>
-<h4 id="CGlib代理调用API及原理实现"><a href="#CGlib代理调用API及原理实现" class="headerlink" title="CGlib代理调用API及原理实现"></a>CGlib代理调用API及原理实现</h4><p><em>CGLib代理的目标对象不需要实现任何接口，它是通过动态继承目标对象来实现动态代理的：MethodInterceptor</em></p>
+<h4 id="CGlib代理调用API及原理实现"><a href="#CGlib代理调用API及原理实现" class="headerlink" title="CGlib代理调用API及原理实现"></a>CGlib代理调用API及原理实现</h4><p><code>CGLib代理的目标对象不需要实现任何接口，它是通过动态继承目标对象来实现动态代理的：MethodInterceptor</code></p>
 <blockquote>
 <p>CGLib代理执行代理方法的效率之所以比JDK的高，是因为CGlib采用了 FastClass机制 ,它的原 理简单来说就是：为代理类和被代理类各生成一个类,这个类会为代理类或被代理类的方法分配一个index （int类型）；这个index当作一个入参，FastClass就可以直接定位要调用的方法并直接进行调用，省去了反射调用，所以调用效率比JDK代理通过反射调用高。</p>
 </blockquote>
@@ -519,7 +519,7 @@
 <p>(2 )JDK动态代理和CGLib代理都在运行期生成字节码，JDK动态代理直接写Class字节码。CGLib代理使用ASM框架写入Class字节码，CGlib代理实现更复杂，生成代理类比JDK动态代理效率低。</p>
 <p>(3)JDK动态代理调用代理方法是通过反射机制调用的，CGLib代理是通过FastClass机制直接调 用方法的，CGLib代理的执行效率更高。</p>
 </blockquote>
-<h4 id="Spring中代理模式的应用"><a href="#Spring中代理模式的应用" class="headerlink" title="Spring中代理模式的应用"></a>Spring中代理模式的应用</h4><p>例子：ProxyFactoryBean.getObject()，主要调用 getSingletonlnstance()和 newPrototypelnstance()，在 Spring 的配置中如果不做任何设置，那么Spring 代理生成的Bean都是单例对象。如果修改scope ,则每次 创建一个新的原型对象。newPrototypelnstance()里面的逻辑比较复杂。</p>
+<h4 id="Spring中代理模式的应用"><a href="#Spring中代理模式的应用" class="headerlink" title="Spring中代理模式的应用"></a>Spring中代理模式的应用</h4><p>例子：ProxyFactoryBean.getObject()，主要调用 getSingletonlnstance()和 newPrototypelnstance()，在 Spring的配置中如果不做任何设置，那么Spring 代理生成的Bean都是单例对象。如果修改scope ,则每次 创建一个新的原型对象。newPrototypelnstance()里面的逻辑比较复杂。</p>
 <p>Spring利用动态代理实现AOP时有两个非常重要的类：JdkDynamicAopProxy类和CglibAopProxy类。</p>
 <blockquote>
 <p>Spring中的代理选择原理：</p>
@@ -553,9 +553,7 @@
 <p>2、    构建多层系统结构，利用门面对象作为每层的入口，简化层间调用.</p>
 </blockquote>
 <h4 id="门面模式主要包含2种角色："><a href="#门面模式主要包含2种角色：" class="headerlink" title="门面模式主要包含2种角色："></a>门面模式主要包含2种角色：</h4><blockquote>
-<p>外观角色（Facade）:也称 门面角色，系统对外统一接口 ； </p>
-</blockquote>
-<blockquote>
+<p>外观角色（Facade）:也称 门面角色，系统对外统一接口 ；</p>
 <p>子系统角色（SubSystem）:可以同时有一或多个SubSystem，每一个SubSystem都不是一个简单的类，而是一个类的集合，SubSystem并不知道Facade的存在，对于SubSystem而言，Facade只 是另一^户端而已（即Facade对SubSystem透明）;</p>
 </blockquote>
 <p>例子：Spring JDBC的 JdbcUtills类 （它封装了和JDBC 相关的所有操作）</p>
@@ -621,7 +619,7 @@
 <p>2、提高了系統的扩展性。</p>
 <p>3、 符合开闭原则。</p>
 <p>4、符合合成复用原则。</p>
-<p>缺点： </p>
+<p>缺点：</p>
 <p>1、增加了系统的理解与设计难度。 </p>
 <p>2、需要正确地识别系统中两个独立变化的维度。</p>
 </blockquote>
@@ -642,7 +640,7 @@
     
     <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
     <p><span class="copy-title">发布时间:</span>2020-03-24, 15:13:47</p>
-    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:20:57</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:28:36</p>
     <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/03/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%BA%8C%E7%AF%87-%E7%BB%93%E6%9E%84%E6%80%A7/" title="设计模式第二篇-结构性">http://chj-yeah.github.io/index/2020/03/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%BA%8C%E7%AF%87-%E7%BB%93%E6%9E%84%E6%80%A7/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
