@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>HashMap源码解析 | Hexo</title>
-  <meta name="keywords" content=" java ">
-  <meta name="description" content="HashMap源码解析 | Hexo">
+  <title>设计模式第一篇-创建性 | Hexo</title>
+  <meta name="keywords" content=" 设计模式 ">
+  <meta name="description" content="设计模式第一篇-创建性 | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="设计模式详解GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁 行为性(Behavioral)13.策略模式(Strategy)定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。 策略模式使用的就是面向对象">
 <meta property="og:type" content="article">
@@ -390,25 +390,31 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-HashMap源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-设计模式第一篇-创建性" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">HashMap源码解析</h1>
+        <h1 class="article-title">设计模式第一篇-创建性</h1>
     
     <div class="article-meta">
         
         
         
+        <span class="book">
+            
+                <a  data-rel="内功心法">内功心法</a>
+            
+        </span>
+        
         
         <span class="tag">
             
-            <a class="color5">java</a>
+            <a class="color5">设计模式</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-02-27 11:31:12'>2020-02-26 16:21</time>
+        创建时间:<time class="date" title='更新时间: 2020-05-12 14:14:42'>2020-03-23 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -430,7 +436,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一，HashMap"><span class="toc-text">一，HashMap</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1，jdk1-7"><span class="toc-text">1，jdk1.7</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2，jdk1-8"><span class="toc-text">2，jdk1.8</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二，ConcurrentHashMap"><span class="toc-text">二，ConcurrentHashMap</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#设计模式详解"><span class="toc-text">设计模式详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#创建性-Creational"><span class="toc-text">创建性(Creational)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-工厂方法模式-Factory-Method"><span class="toc-text">1.工厂方法模式(Factory Method)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#简单工厂模式-Simple-Factory-Pattern"><span class="toc-text">简单工厂模式(Simple Factory Pattern)</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#工厂方法适用于以下场景："><span class="toc-text">工厂方法适用于以下场景：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-抽象工厂模式-Abstract-Factory"><span class="toc-text">2.抽象工厂模式(Abstract Factory)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-单例模式-Singleton"><span class="toc-text">3.单例模式(Singleton)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#单例模式的定义和应用场景"><span class="toc-text">单例模式的定义和应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#饿汉式单例模式"><span class="toc-text">饿汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#懒汉式单例模式"><span class="toc-text">懒汉式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#序列化破坏单例"><span class="toc-text">序列化破坏单例</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#注册式单例模式"><span class="toc-text">注册式单例模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#线程单例实现ThreadLocal"><span class="toc-text">线程单例实现ThreadLocal</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-建造者模式-Builder"><span class="toc-text">4.建造者模式(Builder)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#建造者模式的设计中主要有四个角色"><span class="toc-text">建造者模式的设计中主要有四个角色:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景"><span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优点与缺点"><span class="toc-text">优点与缺点</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#建造者模式与工厂模式的区别"><span class="toc-text">建造者模式与工厂模式的区别</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-原型模式-Prototype"><span class="toc-text">5.原型模式(Prototype)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#优点与缺点-1"><span class="toc-text">优点与缺点</span></a></li></ol></li></ol></li></ol></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -446,33 +452,93 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一，HashMap"><a href="#一，HashMap" class="headerlink" title="一，HashMap"></a>一，HashMap</h3><h4 id="1，jdk1-7"><a href="#1，jdk1-7" class="headerlink" title="1，jdk1.7"></a>1，jdk1.7</h4><p>核心方法put 和get :</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (table == EMPTY_TABLE) &#123;</span><br><span class="line">        inflateTable(threshold);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> putForNullKey(value);</span><br><span class="line">    <span class="keyword">int</span> hash = hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[i]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            e.value = value;</span><br><span class="line">            e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    addEntry(hash, key, value, i);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>判断当前数组是否需要初始化。</li>
-<li>如果 key 为空，则 put 一个空值进去。</li>
-<li>根据 key 计算出 hashcode。</li>
-<li>根据计算出的 hashcode 定位出所在桶。</li>
-<li>如果桶是一个链表则需要遍历判断里面的 hashcode、key 是否和传入 key 相等，如果相等则进行覆盖，并返回原来的值。</li>
-<li>如果桶是空的，说明当前位置没有数据存入；新增一个 Entry 对象写入当前位置。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((size &gt;= threshold) &amp;&amp; (<span class="keyword">null</span> != table[bucketIndex])) &#123;</span><br><span class="line">        resize(<span class="number">2</span> * table.length);</span><br><span class="line">        hash = (<span class="keyword">null</span> != key) ? hash(key) : <span class="number">0</span>;</span><br><span class="line">        bucketIndex = indexFor(hash, table.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    createEntry(hash, key, value, bucketIndex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; e = table[bucketIndex];</span><br><span class="line">    table[bucketIndex] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当调用 addEntry 写入 Entry 时需要判断是否需要扩容。</p>
-<p>如果需要就进行两倍扩充，并将当前的 key 重新 hash 并定位。</p>
-<p>而在 <code>createEntry</code> 中会将当前位置的桶传入到新建的桶中，如果当前桶有值就会在位置形成链表。</p>
-<h4 id="2，jdk1-8"><a href="#2，jdk1-8" class="headerlink" title="2，jdk1.8"></a>2，jdk1.8</h4><p><strong>区分</strong>： jdk1.7版本当 Hash 冲突严重时，在桶上形成的链表会变的越来越长，这样在查询时的效率就会越来越低；时间复杂度为 <code>O(N)</code>。 ,当桶的容量越来越大,查询链表的效率越低。jdk1.8 两个核心方法（get/put）可以看出 1.8 中对大链表做了优化，修改为红黑树之后查询效率直接提高到了 <code>O(logn)</code>。 </p>
-<p><strong>遍历方式</strong>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Map.Entry&lt;String, Integer&gt;&gt; entryIterator = map.entrySet().iterator();</span><br><span class="line">         <span class="keyword">while</span> (entryIterator.hasNext()) &#123;</span><br><span class="line">             Map.Entry&lt;String, Integer&gt; next = entryIterator.next();</span><br><span class="line">             System.out.println(<span class="string">"key="</span> + next.getKey() + <span class="string">" value="</span> + next.getValue());        </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="二，ConcurrentHashMap"><a href="#二，ConcurrentHashMap" class="headerlink" title="二，ConcurrentHashMap"></a>二，ConcurrentHashMap</h3><p> 原理上来说：ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock。不会像 HashTable 那样不管是 put 还是 get 操作都需要做同步处理，理论上 ConcurrentHashMap 支持 CurrencyLevel (Segment 数组数量)的线程并发。每当一个线程占用锁访问一个 Segment 时，不会影响到其他的 Segment。 </p>
-<p>区分：已经解决了并发问题，并且能支持 N 个 Segment 这么多次数的并发，但依然存在 HashMap 在 1.7 版本中的问题。那就是查询遍历链表效率太低。</p>
-<p> 1.8 在 1.7 的数据结构上做了大的改动，采用红黑树之后可以保证查询效率（<code>O(logn)</code>），甚至取消了 ReentrantLock 改为了 synchronized，这样可以看出在新版的 JDK 中对 synchronized 优化是很到位的。 </p>
+        <h1 id="设计模式详解"><a href="#设计模式详解" class="headerlink" title="设计模式详解"></a>设计模式详解</h1><p><em>GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁</em></p>
+<h2 id="创建性-Creational"><a href="#创建性-Creational" class="headerlink" title="创建性(Creational)"></a>创建性(Creational)</h2><h3 id="1-工厂方法模式-Factory-Method"><a href="#1-工厂方法模式-Factory-Method" class="headerlink" title="1.工厂方法模式(Factory Method)"></a>1.工厂方法模式(Factory Method)</h3><h4 id="简单工厂模式-Simple-Factory-Pattern"><a href="#简单工厂模式-Simple-Factory-Pattern" class="headerlink" title="简单工厂模式(Simple Factory Pattern)"></a>简单工厂模式(Simple Factory Pattern)</h4><p>​    <code>是指由 一个工厂对象决定创建出哪一种产品类的实例，但它不属于GOF 23种设计横式。简单工厂适于工厂类负责创建的对象较少的场景，且客户端只需要 传入工厂类的参数，对于如何创建对象的逻辑不需要关心。</code>   </p>
+<blockquote>
+<p>例子:   JDK源码中的Calendar.getInstance()方法。</p>
+<p>缺点：工厂类的职责相对于过重，不易于扩展过于复杂的产品结构</p>
+</blockquote>
+<blockquote>
+<p>工厂方法模式(Fatory Method Pattern )是指定义一个创建对象的接口，但让实现这个接口的类</p>
+<p>来决定实例化哪个类，工厂方法让类的实例化推退到子类中进行。在工厂方法模式中用户只需要关心所</p>
+<p>需产品对应的工厂，无须关心创建细节，而且加入新的产品符合开闭原则。</p>
+<p>工厂方法模式主要解决产品扩展的问题，在简单工厂中，随看产品链的丰富，如果每个课程的创建 逻辑有区别的话，工厂的职责会变得越来越多，有点像万能工厂，并不便于维护。根据单一职责原则我 们将职能继续拆分，专人干专事。</p>
+</blockquote>
+<h4 id="工厂方法适用于以下场景："><a href="#工厂方法适用于以下场景：" class="headerlink" title="工厂方法适用于以下场景："></a>工厂方法适用于以下场景：</h4><blockquote>
+<p>1、    创建对象需要大量重复的代码。</p>
+<p>2、    客户端(应用层)不依赖于产品类实例如何被创建、实现等细节。</p>
+<p>3、    一个类通过其子类来指定创建哪个对象。 </p>
+<p>工厂方法也有缺点:</p>
+<p>1、    类的个数容易过多，増加复杂度。</p>
+<p>2、    増加了系统的抽象性和理解难度。</p>
+</blockquote>
+<h3 id="2-抽象工厂模式-Abstract-Factory"><a href="#2-抽象工厂模式-Abstract-Factory" class="headerlink" title="2.抽象工厂模式(Abstract Factory)"></a>2.抽象工厂模式(Abstract Factory)</h3><blockquote>
+<p>抽象工厂模式(Abastract Factory Pattern )是指提供一个创建一系列相关或相互依赖对象的接口， 无须指定他们具体的类。客户端（应用层）不依赖于产品类实例如何被创建、实现等细节，强调的是一 系列相关的产品对象（属于同一产品族<strong>）</strong>一起使用创建对象需要大量重复的代码。需要提供一个产品类 的库，所有的产品以同样的接口出现，从而使客户端不依赖于具体实现。</p>
+</blockquote>
+<p>讲解抽象工厂之前，我们要了解两个概念产品等级培构和产品族，看下面的图：</p>
+<p><img src="/index/img/image/wps1.png" alt="img"> </p>
+<p>产品等级结构</p>
+<p>从上图中看出有正方形，圆形和菱形三种图形，相同颜色深浅的就代表同一个产品族，相同形状的代表 同一个产品等级结构。同样可以从生活中来举例，比如，美的电器生产多种家用电器。那么上图中，颜 色最深的正方形就代表美的洗衣机、颜色最深的圖形代表美的空调、颜色最深的菱形代表美的热水器, 颜色最深的一排都属于美的品牌，都是美的电器这个产品族。再看最右侧的菱形，颜色最深的我们指定 了代表美的热水器，那么第二排颜色稍微浅一点的菱形，代表海信的热水器。同理，同一产品结构下还 有格力热水器，格力空调，格力洗衣机。</p>
+<p>再看下面的这张图，最左侧的小房子我们就认为具体的工厂,有美的工厂,有海信工厂,有格力工厂。 每个品牌的工厂都生产洗衣机、热水器和空调。</p>
+<p><img src="/index/img/image/wps2.png" alt="img"> </p>
+<p>通过上面两张图的对比理解，相信大家对抽象工厂有了非常形象的理解。</p>
+<h3 id="3-单例模式-Singleton"><a href="#3-单例模式-Singleton" class="headerlink" title="3.单例模式(Singleton)"></a>3.单例模式(Singleton)</h3><h4 id="单例模式的定义和应用场景"><a href="#单例模式的定义和应用场景" class="headerlink" title="单例模式的定义和应用场景"></a>单例模式的定义和应用场景</h4><blockquote>
+<p>单例模式是指确保一个类在任何情况下都绝对只有一个实例，并提供<br>一个全局访问点.单例模式是创建型模式。</p>
+<p>单例模式在生活中应用也是十分广泛，例如，公司CEO、部门经理等.J2EE 标 准中的 ServletContext、ServletContextConfig 等、Spring 框架应 用中的Applicationcontext. 数据库的连接池等也都是单例形式。</p>
+</blockquote>
+<h4 id="饿汉式单例模式"><a href="#饿汉式单例模式" class="headerlink" title="饿汉式单例模式"></a>饿汉式单例模式</h4><blockquote>
+<p>饿汉式单例模式在类加载的时候就立即初始化，并且创建单例对象.它绝对线程安全，在线程还没出现以前就实例化了，不可能存在访问安全问问题。</p>
+</blockquote>
+<blockquote>
+<p>保证绝对线程安全、执行效率比较高 但是它的缺点也很明显，就是所有对象类加载的时候就实例化. 这样一来，如果系统中有大批量的单例对象存在，那系统初始化是就会导致大量的内存浪费,也就是说， 不管对象用于不用都占着空间，浪费了内存。</p>
+</blockquote>
+<h4 id="懒汉式单例模式"><a href="#懒汉式单例模式" class="headerlink" title="懒汉式单例模式"></a>懒汉式单例模式</h4><blockquote>
+<p>为了解决饿汉式単例可能带来的内存浪费问题，于是就出现了懒汉式单例的写法，懒汉式单例模式 的特点是单例对象要在被使用时才会初始化。</p>
+</blockquote>
+<blockquote>
+<p>1：synchronized关键字，使这个方法变成线程同步方法</p>
+</blockquote>
+<h4 id="序列化破坏单例"><a href="#序列化破坏单例" class="headerlink" title="序列化破坏单例"></a>序列化破坏单例</h4><blockquote>
+<p>一个单例对象创建好后，有时候需要将对象序列化然后写入破盘，下次使用时再从磁盘中读取对象 并进行反序列化，将其转化为内存对象.反序列化后的对象会重新分配内存，即重新创建.如果序列化 的目标对象为单例对象，就违背了单例模式的初衷，相当于破坏了单例。</p>
+</blockquote>
+<h4 id="注册式单例模式"><a href="#注册式单例模式" class="headerlink" title="注册式单例模式"></a>注册式单例模式</h4><blockquote>
+<p>注册式单例模式又称为登记式単例模式，就是将每一个实例都登记到某一个 地方，使用唯一标识获取实例。注册式单例模式有两种:一种为枚举式単例模式，另—种为容器式单例模式。</p>
+</blockquote>
+<h4 id="线程单例实现ThreadLocal"><a href="#线程单例实现ThreadLocal" class="headerlink" title="线程单例实现ThreadLocal"></a>线程单例实现ThreadLocal</h4><blockquote>
+<p>讲讲线程単例实现ThreadLocal. ThreadLocal不能保证其创建的对象 是全局唯一的，但是能保证在单个线程中是唯一的 ,天生是线程安全的。</p>
+</blockquote>
+<p><em>总结：单例模式可以保证内存里只有一个实例，减少内存的开销，还可以避免对资源的多重占用。</em></p>
+<h3 id="4-建造者模式-Builder"><a href="#4-建造者模式-Builder" class="headerlink" title="4.建造者模式(Builder)"></a>4.建造者模式(Builder)</h3><p><em>定义：建造者模式(Builder Pattern)是将一个 复杂对象的构造过程与它的表示分高，使得同样的构建过 程可以创建不同的表示，属于创建型模式。使用建造者模式对于用户而言只需指定需要建造的类型就可 以获得对象，建造过程及细节不需要了解。</em></p>
+<h4 id="建造者模式的设计中主要有四个角色"><a href="#建造者模式的设计中主要有四个角色" class="headerlink" title="建造者模式的设计中主要有四个角色:"></a>建造者模式的设计中主要有四个角色:</h4><blockquote>
+<p>1、产品（Product）:要创建的产品类对象。                                                                                                        2、建造者抽象(Builder):建造者的抽象类，规范产品对象的各个组  分的建造，一般由子类 实现具体的建造过程。                                                                                                                                                                           3、建造者(ConcreteBuilder):具体的Builder类，根据不同的业务逻辑，具体化对象的各个组成 部分建造。         4、调用者(Director):调用具体的建造者，来创建对象的各个部分，在指导者中不涉及具体产品的信息，只负责保证对象各部分完整创建或按某种顺序创建。</p>
+</blockquote>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><p><em>建造者模式适用于一个具有较多的零件的复杂产品的创建过程，由于需求的变化，组成这个复杂产 品的各个零伯经常猛烈变化，但是它们的组合方式却相对稳定.</em></p>
+<blockquote>
+<p>建造者模式适用于以下几种场景:                                                                                                                               1，相同的方法，不同的执行顺序，产生不同的结果时                                                                                                 2，多个部件和零件，都可以装配到一个对象中，但是产生的结果又不相同3，产品类非常复杂，或者产品类中的调用顺序不同产生不同的作用                                                                                                                                        4，当初始化一个对象特别复杂，参数多，而且很多参数都具有默认值时</p>
+</blockquote>
+<p>例子：Mybatis 中的 CacheBuilder.build()类，SqlSessionFactoryBuilder.build()类。</p>
+<p>​            Spring 中的 BeanDefinitionBuilder.getBeanDefinition()类</p>
+<h4 id="优点与缺点"><a href="#优点与缺点" class="headerlink" title="优点与缺点"></a>优点与缺点</h4><blockquote>
+<p>1、封装性好，创建和使用分离；                                                                                                                            2、扩展性好，建造类之间独立，一定程度上解耦。</p>
+<p>1，产生多余的Builder对象；                                                                                                                             2，2，产品内部发生变化，建造者都要修改，成本较大。</p>
+</blockquote>
+<h4 id="建造者模式与工厂模式的区别"><a href="#建造者模式与工厂模式的区别" class="headerlink" title="建造者模式与工厂模式的区别"></a>建造者模式与工厂模式的区别</h4><blockquote>
+<p>1、建造者模式更加注重方法的调用顺序，工厂模式注重于创建对象。                                                              2、创建对象的力度不同，建造者模式创建复杂的对象，由各种复杂的部件组成，工厂模式创建出来的都一样                                                                    3、关注重点不一样，工厂模式只需要把对象创建出来就可以了，而建造者模式中不仅仅要创建出这个对象，还要知道这个对象由哪些部件组成.。                                                                                                                    4、建造者模式根据建造过程中的顺序不一样,最终的对象部件组成也不一样。</p>
+</blockquote>
+<h3 id="5-原型模式-Prototype"><a href="#5-原型模式-Prototype" class="headerlink" title="5.原型模式(Prototype)"></a>5.原型模式(Prototype)</h3><p><em>定义：是指原型实例指定创建对象的种类，并且通过这些原型创建新的对象，属于创建型模式。</em></p>
+<blockquote>
+<p>核心在于拷贝原型对象.以系统中已存在的一个 对象为原型，直接基于内存二制流进 行拷贝，无需再经历耗时的对象初始化过程（不调用构造函数）,性能提升许多,当对象的构建过程比比较耗时时，可以利用当前系统中巳存在的对象作为原型，对其进行克隆(一般是基于二进制流的复制）。躲避初始化过程，使得新对象的创建时间大大减少。</p>
+</blockquote>
+<blockquote>
+<p>例子：JDK的API:  Cloneable接口（浅克隆）；</p>
+</blockquote>
+<p><code>使用序列化实现深度克隆解决浅克隆问题。</code></p>
+<h4 id="优点与缺点-1"><a href="#优点与缺点-1" class="headerlink" title="优点与缺点"></a>优点与缺点</h4><blockquote>
+<p>优点：</p>
+<p> 1、性能优良，Java自带的原型模式是基于内存二进制流的拷贝，比直接new 一个 对象性能上提 升了许多。 2、可以使用深克隆保存对象的状态，使原型模式将一个对象复制一份并将其状态保存起来，简化 了创建对象的过程，以便在需要的时候使用（列如恢复到历史某一个状态）可以辅助实现撤销操作。</p>
+<p>缺点：</p>
+<p>1、需要为每一个类配置一个克隆方法.                                                                                                                                              2、克隆方法位于类的内部，当对已有类进行改造的时候，需要修改代码，违反了开闭原则.                          3、在实现深克隆时需要写较为复杂的代码，而且当对象之间存在多重嵌套引用时，为了实现深克 隆，每一层对象对应的类都必须支持深克隆，实现起来会比较麻烦。因此，深拷贝、浅拷贝需要运用得 当。</p>
+</blockquote>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 944969397@qq.com </span>
@@ -486,12 +552,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>HashMap源码解析</p>
+    <p><span class="copy-title">文章标题:</span>设计模式第一篇-创建性</p>
     
     <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
-    <p><span class="copy-title">发布时间:</span>2020-02-26, 16:21:36</p>
-    <p><span class="copy-title">最后更新:</span>2020-02-27, 11:31:12</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="HashMap源码解析">http://chj-yeah.github.io/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</a>
+    <p><span class="copy-title">发布时间:</span>2020-03-23, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:14:42</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/03/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%88%9B%E5%BB%BA%E6%80%A7/" title="设计模式第一篇-创建性">http://chj-yeah.github.io/index/2020/03/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%88%9B%E5%BB%BA%E6%80%A7/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

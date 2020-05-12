@@ -2,9 +2,9 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>HashMap源码解析 | Hexo</title>
-  <meta name="keywords" content=" java ">
-  <meta name="description" content="HashMap源码解析 | Hexo">
+  <title>七大软件原则与设计模式 | Hexo</title>
+  <meta name="keywords" content=" 设计模式 ">
+  <meta name="description" content="七大软件原则与设计模式 | Hexo">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <meta name="description" content="设计模式详解GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁 行为性(Behavioral)13.策略模式(Strategy)定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。 策略模式使用的就是面向对象">
 <meta property="og:type" content="article">
@@ -390,25 +390,31 @@
 </aside>
 <div class="post">
     <div class="pjax">
-        <article id="post-HashMap源码分析" class="article article-type-post" itemscope itemprop="blogPost">
+        <article id="post-七大软件原则与设计模式" class="article article-type-post" itemscope itemprop="blogPost">
     
-        <h1 class="article-title">HashMap源码解析</h1>
+        <h1 class="article-title">七大软件原则与设计模式</h1>
     
     <div class="article-meta">
         
         
         
+        <span class="book">
+            
+                <a  data-rel="内功心法">内功心法</a>
+            
+        </span>
+        
         
         <span class="tag">
             
-            <a class="color5">java</a>
+            <a class="color5">设计模式</a>
             
         </span>
         
     </div>
     <div class="article-meta">
         
-        创建时间:<time class="date" title='更新时间: 2020-02-27 11:31:12'>2020-02-26 16:21</time>
+        创建时间:<time class="date" title='更新时间: 2020-05-12 14:00:54'>2020-03-23 15:13</time>
         
     </div>
     <div class="article-meta">
@@ -430,7 +436,7 @@
     
     <div class="toc-ref">
     
-        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一，HashMap"><span class="toc-text">一，HashMap</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1，jdk1-7"><span class="toc-text">1，jdk1.7</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2，jdk1-8"><span class="toc-text">2，jdk1.8</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二，ConcurrentHashMap"><span class="toc-text">二，ConcurrentHashMap</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#开闭原则"><span class="toc-text">开闭原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#依赖倒置原则"><span class="toc-text">依赖倒置原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#单一职责原则"><span class="toc-text">单一职责原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#接口隔离原则"><span class="toc-text">接口隔离原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#迪米特法则"><span class="toc-text">迪米特法则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#里氏替换原则"><span class="toc-text">里氏替换原则</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#合成复用原则"><span class="toc-text">合成复用原则</span></a></li></ol>
     
 <style>
     .left-col .switch-btn,
@@ -446,33 +452,80 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一，HashMap"><a href="#一，HashMap" class="headerlink" title="一，HashMap"></a>一，HashMap</h3><h4 id="1，jdk1-7"><a href="#1，jdk1-7" class="headerlink" title="1，jdk1.7"></a>1，jdk1.7</h4><p>核心方法put 和get :</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> V <span class="title">put</span><span class="params">(K key, V value)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (table == EMPTY_TABLE) &#123;</span><br><span class="line">        inflateTable(threshold);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (key == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">return</span> putForNullKey(value);</span><br><span class="line">    <span class="keyword">int</span> hash = hash(key);</span><br><span class="line">    <span class="keyword">int</span> i = indexFor(hash, table.length);</span><br><span class="line">    <span class="keyword">for</span> (Entry&lt;K,V&gt; e = table[i]; e != <span class="keyword">null</span>; e = e.next) &#123;</span><br><span class="line">        Object k;</span><br><span class="line">        <span class="keyword">if</span> (e.hash == hash &amp;&amp; ((k = e.key) == key || key.equals(k))) &#123;</span><br><span class="line">            V oldValue = e.value;</span><br><span class="line">            e.value = value;</span><br><span class="line">            e.recordAccess(<span class="keyword">this</span>);</span><br><span class="line">            <span class="keyword">return</span> oldValue;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    modCount++;</span><br><span class="line">    addEntry(hash, key, value, i);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<ul>
-<li>判断当前数组是否需要初始化。</li>
-<li>如果 key 为空，则 put 一个空值进去。</li>
-<li>根据 key 计算出 hashcode。</li>
-<li>根据计算出的 hashcode 定位出所在桶。</li>
-<li>如果桶是一个链表则需要遍历判断里面的 hashcode、key 是否和传入 key 相等，如果相等则进行覆盖，并返回原来的值。</li>
-<li>如果桶是空的，说明当前位置没有数据存入；新增一个 Entry 对象写入当前位置。</li>
-</ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">addEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> ((size &gt;= threshold) &amp;&amp; (<span class="keyword">null</span> != table[bucketIndex])) &#123;</span><br><span class="line">        resize(<span class="number">2</span> * table.length);</span><br><span class="line">        hash = (<span class="keyword">null</span> != key) ? hash(key) : <span class="number">0</span>;</span><br><span class="line">        bucketIndex = indexFor(hash, table.length);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    createEntry(hash, key, value, bucketIndex);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">createEntry</span><span class="params">(<span class="keyword">int</span> hash, K key, V value, <span class="keyword">int</span> bucketIndex)</span> </span>&#123;</span><br><span class="line">    Entry&lt;K,V&gt; e = table[bucketIndex];</span><br><span class="line">    table[bucketIndex] = <span class="keyword">new</span> Entry&lt;&gt;(hash, key, value, e);</span><br><span class="line">    size++;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>当调用 addEntry 写入 Entry 时需要判断是否需要扩容。</p>
-<p>如果需要就进行两倍扩充，并将当前的 key 重新 hash 并定位。</p>
-<p>而在 <code>createEntry</code> 中会将当前位置的桶传入到新建的桶中，如果当前桶有值就会在位置形成链表。</p>
-<h4 id="2，jdk1-8"><a href="#2，jdk1-8" class="headerlink" title="2，jdk1.8"></a>2，jdk1.8</h4><p><strong>区分</strong>： jdk1.7版本当 Hash 冲突严重时，在桶上形成的链表会变的越来越长，这样在查询时的效率就会越来越低；时间复杂度为 <code>O(N)</code>。 ,当桶的容量越来越大,查询链表的效率越低。jdk1.8 两个核心方法（get/put）可以看出 1.8 中对大链表做了优化，修改为红黑树之后查询效率直接提高到了 <code>O(logn)</code>。 </p>
-<p><strong>遍历方式</strong>：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Iterator&lt;Map.Entry&lt;String, Integer&gt;&gt; entryIterator = map.entrySet().iterator();</span><br><span class="line">         <span class="keyword">while</span> (entryIterator.hasNext()) &#123;</span><br><span class="line">             Map.Entry&lt;String, Integer&gt; next = entryIterator.next();</span><br><span class="line">             System.out.println(<span class="string">"key="</span> + next.getKey() + <span class="string">" value="</span> + next.getValue());        </span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<h3 id="二，ConcurrentHashMap"><a href="#二，ConcurrentHashMap" class="headerlink" title="二，ConcurrentHashMap"></a>二，ConcurrentHashMap</h3><p> 原理上来说：ConcurrentHashMap 采用了分段锁技术，其中 Segment 继承于 ReentrantLock。不会像 HashTable 那样不管是 put 还是 get 操作都需要做同步处理，理论上 ConcurrentHashMap 支持 CurrencyLevel (Segment 数组数量)的线程并发。每当一个线程占用锁访问一个 Segment 时，不会影响到其他的 Segment。 </p>
-<p>区分：已经解决了并发问题，并且能支持 N 个 Segment 这么多次数的并发，但依然存在 HashMap 在 1.7 版本中的问题。那就是查询遍历链表效率太低。</p>
-<p> 1.8 在 1.7 的数据结构上做了大的改动，采用红黑树之后可以保证查询效率（<code>O(logn)</code>），甚至取消了 ReentrantLock 改为了 synchronized，这样可以看出在新版的 JDK 中对 synchronized 优化是很到位的。 </p>
+        <h3 id="开闭原则"><a href="#开闭原则" class="headerlink" title="开闭原则"></a>开闭原则</h3><blockquote>
+<p>开闭原则<em>（Open-ClosedPrinciple,OCP）</em>是指一个软件实体如类、模块和函数应该对扩展开放，</p>
+<p>对修改关闭。所谓的开闭，也正是对扩展和修改两个行为的一个原则。强调的是用抽象构建框架，用实</p>
+<p>现扩展细节。可以提高软件系统的可复用性及可维护性。开闭原则，是面向对象设计中最基础的设计原</p>
+<p>则。它指导我们如何建立稳定灵活的系统，例如：我们版本更新，我尽可能不修改源代码，但是可以增</p>
+<p>加新功能。</p>
+<p>比如，很多互联网公司都实行弹性制作息时间，规定每天工作8小时。意思就是说，对于每天工作8小时这个规定是关闭的，但是你什么时候来，什么时候走是开放的。早来早走，晚来晚走。</p>
+</blockquote>
+<h3 id="依赖倒置原则"><a href="#依赖倒置原则" class="headerlink" title="依赖倒置原则"></a>依赖倒置原则</h3><blockquote>
+<p>依赖倒置原则<em>（DependenceInversionPrinciple,DIP）</em>是指设计代码结构时，高层模块不应该依</p>
+<p>赖底层模块，二者都应该依赖其抽象。抽象不应该依赖细节；细节应该依赖抽象。通过依赖倒置，可以</p>
+<p>减少类与类之间的耦合性，提高系统的稳定性，提高代码的可读性和可维护性，并能够降低修改程序所</p>
+<p>造成的风险。</p>
+<p>大家要切记：以抽象为基准比以细节为基准搭建起来的架构要稳定得多，因此大家在拿到需求之后，</p>
+<p>要面向接口编程，先顶层再细节来设计代码结构。</p>
+</blockquote>
+<h3 id="单一职责原则"><a href="#单一职责原则" class="headerlink" title="单一职责原则"></a>单一职责原则</h3><blockquote>
+<p>单一职责<em>（SimpleResponsibilityPinciple，SRP）</em>是指不要存在多于一个导致类变更的原因。假</p>
+<p>设我们有一个Class负责两个职责，一旦发生需求变更，修改其中一个职责的逻辑代码，有可能会导致</p>
+<p>另一个职责的功能发生故障。这样一来，这个Class存在两个导致类变更的原因。如何解决这个问题呢？</p>
+<p>我们就要给两个职责分别用两个Class来实现，进行解耦。后期需求变更维护互不影响。这样的设计，</p>
+<p>可以降低类的复杂度，提高类的可读性，提高系统的可维护性，降低变更引起的风险。总体来说就是一</p>
+<p>个Class/Interface/Method只负责一项职责。</p>
+</blockquote>
+<h3 id="接口隔离原则"><a href="#接口隔离原则" class="headerlink" title="接口隔离原则"></a>接口隔离原则</h3><blockquote>
+<p>接口隔离原则<em>（InterfaceSegregationPrinciple,ISP）</em>是指用多个专门的接口，而不使用单一的</p>
+<p>总接口，客户端不应该依赖它不需要的接口。这个原则指导我们在设计接口时应当注意一下几点：</p>
+<blockquote>
+<p>1、一个类对一类的依赖应该建立在最小的接口之上。</p>
+<p>2、建立单一接口，不要建立庞大臃肿的接口。</p>
+<p>3、尽量细化接口，接口中的方法尽量少（不是越少越好，一定要适度）。</p>
+<p>接口隔离原则符合我们常说的高内聚低耦合的设计思想，从而使得类具有很好的可读性、可扩展性</p>
+<p>和可维护性。我们在设计接口的时候，要多花时间去思考，要考虑业务模型，包括以后有可能发生变更</p>
+<p>的地方还要做一些预判。所以，对于抽象，对业务模型的理解是非常重要的。</p>
+</blockquote>
+</blockquote>
+<h3 id="迪米特法则"><a href="#迪米特法则" class="headerlink" title="迪米特法则"></a>迪米特法则</h3><blockquote>
+<p>迪米特原则<em>（LawofDemeterLoD）</em>是指一个对象应该对其他对象保持最少的了解，又叫最少知道原则<em>（LeastKnowledgePrinciple,LKP）</em>，尽量降低类与类之间的耦合。迪米特原则主要强调只和朋友交流，</p>
+<p>不和陌生人说话。出现在成员变量、方法的输入、输出参数中的类都可以称之为成员朋友类，</p>
+<p>而出现在方法体内部的类不属于朋友类。</p>
+<p>学习软件设计原则，千万不能形成强迫症。碰到业务复杂的场景，我们需要随机应变。</p>
+</blockquote>
+<h3 id="里氏替换原则"><a href="#里氏替换原则" class="headerlink" title="里氏替换原则"></a>里氏替换原则</h3><blockquote>
+<p>定义：里氏替换原则（LiskovSubstitutionPrinciple,LSP）是指如果对每一个类型为T1的对象o1,都有</p>
+<p>类型为T2的对象o2,使得以T1定义的所有程序P在所有的对象o1都替换成o2时，程序P的行为没</p>
+<p>有发生变化，那么类型T2是类型T1的子类型。</p>
+<p>​        定义看上去还是比较抽象，我们重新理解一下，可以理解为一个软件实体如果适用一个父类的话，</p>
+<p>那一定是适用于其子类，所有引用父类的地方必须能透明地使用其子类的对象，子类对象能够替换父类</p>
+<p>对象，而程序逻辑不变。根据这个理解，我们总结一下：</p>
+<blockquote>
+<p>引申含义：子类可以扩展父类的功能，但不能改变父类原有的功能。</p>
+<p>1、子类可以实现父类的抽象方法，但不能覆盖父类的非抽象方法。</p>
+<p>2、子类中可以增加自己特有的方法。</p>
+<p>3、当子类的方法重载父类的方法时，方法的前置条件（即方法的输入/入参）要比父类方法的输入</p>
+<p>参数更宽松。</p>
+<p>4、当子类的方法实现父类的方法时（重写/重载或实现抽象方法），方法的后置条件（即方法的输</p>
+<p>出/返回值）要比父类更严格或相等。</p>
+</blockquote>
+</blockquote>
+<p><em>使用里氏替换原则有以下优点：</em></p>
+<blockquote>
+<p>1、约束继承泛滥，开闭原则的一种体现。</p>
+<p>2、加强程序的健壮性，同时变更时也可以做到非常好的兼容性，提高程序的维护性、扩展性。降低</p>
+<p>需求变更时引入的风险。</p>
+</blockquote>
+<h3 id="合成复用原则"><a href="#合成复用原则" class="headerlink" title="合成复用原则"></a>合成复用原则</h3><blockquote>
+<p>合成复用原则<em>（Composite/AggregateReusePrinciple,CARP）</em>是指尽量使用对象组合(has-a)/</p>
+<p>聚合(contanis-a)，而不是继承关系达到软件复用的目的。可以使系统更加灵活，降低类与类之间的耦</p>
+<p>合度，一个类的变化对其他类造成的影响相对较少。</p>
+<p>继承我们叫做白箱复用，相当于把所有的实现细节暴露给子类。组合/聚合也称之为黑箱复用，对类</p>
+<p>以外的对象是无法获取到实现细节的。</p>
+</blockquote>
+<p><u><em>设计原则总结 : 学习设计原则，学习设计模式的基础。在实际开发过程中，并不是一定要求所有代码都遵循设计原则，我们要考虑人力、时间、成本、质量，不是刻意追求完美，要在适当的场景遵循设计原则，体现的是一种平衡取舍，帮助我们设计出更加优雅的代码结构。</em></u></p>
+<p><img src="/index/img/image/1586147131871.png" alt="1586147131871"></p>
 
       
        <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 944969397@qq.com </span>
@@ -486,12 +539,12 @@
 
 
 <div class="article_copyright">
-    <p><span class="copy-title">文章标题:</span>HashMap源码解析</p>
+    <p><span class="copy-title">文章标题:</span>七大软件原则与设计模式</p>
     
     <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
-    <p><span class="copy-title">发布时间:</span>2020-02-26, 16:21:36</p>
-    <p><span class="copy-title">最后更新:</span>2020-02-27, 11:31:12</p>
-    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="HashMap源码解析">http://chj-yeah.github.io/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/</a>
+    <p><span class="copy-title">发布时间:</span>2020-03-23, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:00:54</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/03/23/%E4%B8%83%E5%A4%A7%E8%BD%AF%E4%BB%B6%E5%8E%9F%E5%88%99%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/" title="七大软件原则与设计模式">http://chj-yeah.github.io/index/2020/03/23/%E4%B8%83%E5%A4%A7%E8%BD%AF%E4%BB%B6%E5%8E%9F%E5%88%99%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/</a>
     <p>
         <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
     </p>

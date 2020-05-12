@@ -1,0 +1,993 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>设计模式第三篇-行为性 | Hexo</title>
+  <meta name="keywords" content=" 设计模式 ">
+  <meta name="description" content="设计模式第三篇-行为性 | Hexo">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="description" content="设计模式详解GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁 行为性(Behavioral)13.策略模式(Strategy)定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。 策略模式使用的就是面向对象">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式第三篇-行为性">
+<meta property="og:url" content="http://chj-yeah.github.io/index/2020/03/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%89%E7%AF%87-%E8%A1%8C%E4%B8%BA%E6%80%A7/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="设计模式详解GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁 行为性(Behavioral)13.策略模式(Strategy)定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。 策略模式使用的就是面向对象">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://chj-yeah.github.io/index/img/image/1586156669961.png">
+<meta property="article:published_time" content="2020-03-25T07:13:47.000Z">
+<meta property="article:modified_time" content="2020-05-12T06:22:48.031Z">
+<meta property="article:author" content="陈汉杰">
+<meta property="article:tag" content="设计模式">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://chj-yeah.github.io/index/img/image/1586156669961.png">
+
+
+<link rel="icon" href="/img/avatar.jpg">
+
+<link href="/index/css/style.css?v=1.0.1" rel="stylesheet">
+
+<link href="/index/css/hl_theme/atom-light.css?v=1.0.1" rel="stylesheet">
+
+<link href="//cdn.bootcss.com/animate.css/3.5.2/animate.min.css" rel="stylesheet">
+<link href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+
+<script src="//cdn.bootcss.com/jquery/2.2.4/jquery.min.js"></script>
+<script src="/index/js/jquery.autocomplete.min.js?v=1.0.1" ></script>
+
+<script src="//cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+<script>
+    hljs.initHighlightingOnLoad();
+</script>
+
+<script src="//cdn.bootcss.com/nprogress/0.2.0/nprogress.min.js"></script>
+
+
+
+<script src="//cdn.bootcss.com/jquery-cookie/1.4.1/jquery.cookie.min.js" ></script>
+
+<script src="/index/js/iconfont.js?v=1.0.1" ></script>
+
+<meta name="generator" content="Hexo 4.2.0"></head>
+<div style="display: none">
+  <input class="theme_disqus_on" value="false">
+  <input class="theme_preload_comment" value="false">
+  <input class="theme_blog_path" value="/index">
+</div>
+
+<body>
+<aside class="nav">
+    <div class="nav-left">
+        <a href="/index/" class="avatar_target">
+    <img class="avatar" src="/index/img/avatar.jpg" />
+</a>
+<div class="author">
+    <span>陈汉杰</span>
+</div>
+
+<div class="icon">
+    
+        
+        <a title="rss" href="/atom.xml" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-rss"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="github" href="https://github.com/chj-yeah" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-github"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="facebook" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-facebook"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+        <a title="instagram" href="https://www.facebook.com/faker.tops" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-instagram"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="reddit" href="https://www.reddit.com/user/yelog/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-reddit"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="weibo" href="http://weibo.com/u/2307534817" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-weibo"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="jianshu" href="https://www.jianshu.com/u/ff56736de7cf" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-jianshu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="zhihu" href="https://www.zhihu.com/people/jaytp/activities" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-zhihu"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+    
+        
+    
+        
+    
+        
+        <a title="email" href="mailto:944969397@qq.com" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-email"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="qq" href="http://wpa.qq.com/msgrd?v=3&uin=944969397&site=qq&menu=yes" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-qq"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="kugou" href="https://www.kugou.com/" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-kugou"></use>
+                </svg>
+            
+        </a>
+        
+    
+        
+        <a title="neteasemusic" href="https://music.163.com/#/user/home?id=88151013" target="_blank">
+            
+                <svg class="iconfont-svg" aria-hidden="true">
+                    <use xlink:href="#icon-neteasemusic"></use>
+                </svg>
+            
+        </a>
+        
+    
+</div>
+
+
+
+
+<ul>
+    <li><div class="all active">全部文章<small>(10)</small></div></li>
+    
+        
+            
+            <li><div data-rel="工具">工具<small>(1)</small></div>
+                
+            </li>
+            
+        
+    
+        
+            
+            <li><div data-rel="内功心法">内功心法<small>(4)</small></div>
+                
+            </li>
+            
+        
+    
+</ul>
+<div class="left-bottom">
+    <div class="menus">
+    
+    
+    
+    
+    </div>
+    <div><a class="about  hasFriend  site_url"  href="/about">关于</a><a style="width: 50%"  class="friends">友链</a></div>
+</div>
+<input type="hidden" id="yelog_site_posts_number" value="10">
+
+<div style="display: none">
+    <span id="busuanzi_value_site_uv"></span>
+    <span id="busuanzi_value_site_pv"></span>
+</div>
+
+    </div>
+    <div class="nav-right">
+        <div class="friends-area">
+    <div class="friends-title">
+        友情链接
+        <i class="back-title-list"></i>
+    </div>
+    <div class="friends-content">
+        <ul>
+            
+            <li><a target="_blank" href="https://github.com/chj-yeah">陈汉杰</a></li>
+            
+        </ul>
+    </div>
+</div>
+        <div class="title-list">
+    <form onkeydown="if(event.keyCode === 13){return false;}">
+        <input id="local-search-input" class="search" type="text" placeholder="Search..." />
+        <i class="cross"></i>
+        <span>
+            <label for="tagswitch">Tags:</label>
+            <input id="tagswitch" type="checkbox" style="display: none" />
+            <i id="tagsWitchIcon"></i>
+        </span>
+    </form>
+    <div class="tags-list">
+    
+    <li class="article-tag-list-item">
+        <a class="color5">java</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color1">Netty</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color5">hexo</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color3">mybatis</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">Spring</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color5">设计模式</a>
+    </li>
+    
+    <li class="article-tag-list-item">
+        <a class="color2">docker</a>
+    </li>
+    
+    <div class="clearfix"></div>
+</div>
+
+    
+    <nav id="title-list-nav">
+        
+        <a  class=""
+           href="/index/2020/02/26/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/"
+           data-tag="java"
+           data-author="" >
+            <span class="post-title" title="HashMap源码解析">HashMap源码解析</span>
+            <span class="post-date" title="2020-02-26 16:21:36">2020/02/26</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/Netty%E6%A1%86%E6%9E%B6%E6%BA%90%E7%A0%81%E8%A7%A3%E6%9E%90/"
+           data-tag="Netty"
+           data-author="" >
+            <span class="post-title" title="Netty框架源码解析">Netty框架源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class="工具 "
+           href="/index/2017/03/23/hexo%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/"
+           data-tag="hexo"
+           data-author="" >
+            <span class="post-title" title="hexo搭建个人博客">hexo搭建个人博客</span>
+            <span class="post-date" title="2017-03-23 15:13:47">2017/03/23</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/mybatis%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/"
+           data-tag="mybatis"
+           data-author="" >
+            <span class="post-title" title="mybatis源码解析">mybatis源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/27/spring%E6%BA%90%E7%A0%81%E6%80%BB%E7%BB%93/"
+           data-tag="Spring"
+           data-author="" >
+            <span class="post-title" title="Spring源码解析">Spring源码解析</span>
+            <span class="post-date" title="2020-02-27 10:21:36">2020/02/27</span>
+        </a>
+        
+        <a  class="内功心法 "
+           href="/index/2020/03/23/%E4%B8%83%E5%A4%A7%E8%BD%AF%E4%BB%B6%E5%8E%9F%E5%88%99%E4%B8%8E%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"
+           data-tag="设计模式"
+           data-author="" >
+            <span class="post-title" title="七大软件原则与设计模式">七大软件原则与设计模式</span>
+            <span class="post-date" title="2020-03-23 15:13:47">2020/03/23</span>
+        </a>
+        
+        <a  class=""
+           href="/index/2020/02/26/%E4%BA%86%E8%A7%A3docket%E7%9A%84%E5%8E%9F%E7%90%86%E5%92%8C%E4%BD%BF%E7%94%A8/"
+           data-tag="docker"
+           data-author="" >
+            <span class="post-title" title="了解docket的原理和使用">了解docket的原理和使用</span>
+            <span class="post-date" title="2020-02-26 15:51:37">2020/02/26</span>
+        </a>
+        
+        <a  class="内功心法 "
+           href="/index/2020/03/23/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%80%E7%AF%87-%E5%88%9B%E5%BB%BA%E6%80%A7/"
+           data-tag="设计模式"
+           data-author="" >
+            <span class="post-title" title="设计模式第一篇-创建性">设计模式第一篇-创建性</span>
+            <span class="post-date" title="2020-03-23 15:13:47">2020/03/23</span>
+        </a>
+        
+        <a  class="内功心法 "
+           href="/index/2020/03/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%89%E7%AF%87-%E8%A1%8C%E4%B8%BA%E6%80%A7/"
+           data-tag="设计模式"
+           data-author="" >
+            <span class="post-title" title="设计模式第三篇-行为性">设计模式第三篇-行为性</span>
+            <span class="post-date" title="2020-03-25 15:13:47">2020/03/25</span>
+        </a>
+        
+        <a  class="内功心法 "
+           href="/index/2020/03/24/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%BA%8C%E7%AF%87-%E7%BB%93%E6%9E%84%E6%80%A7/"
+           data-tag="设计模式"
+           data-author="" >
+            <span class="post-title" title="设计模式第二篇-结构性">设计模式第二篇-结构性</span>
+            <span class="post-date" title="2020-03-24 15:13:47">2020/03/24</span>
+        </a>
+        
+    </nav>
+</div>
+    </div>
+    <div class="hide-list">
+        <div class="semicircle">
+            <div class="brackets first"><</div>
+            <div class="brackets">&gt;</div>
+        </div>
+    </div>
+</aside>
+<div class="post">
+    <div class="pjax">
+        <article id="post-设计模式第三篇-行为性" class="article article-type-post" itemscope itemprop="blogPost">
+    
+        <h1 class="article-title">设计模式第三篇-行为性</h1>
+    
+    <div class="article-meta">
+        
+        
+        
+        <span class="book">
+            
+                <a  data-rel="内功心法">内功心法</a>
+            
+        </span>
+        
+        
+        <span class="tag">
+            
+            <a class="color5">设计模式</a>
+            
+        </span>
+        
+    </div>
+    <div class="article-meta">
+        
+        创建时间:<time class="date" title='更新时间: 2020-05-12 14:22:48'>2020-03-25 15:13</time>
+        
+    </div>
+    <div class="article-meta">
+        
+        
+        <span id="busuanzi_container_page_pv">
+            阅读:<span id="busuanzi_value_page_pv">
+                <span class="count-comment">
+                    <span class="spinner">
+                      <div class="cube1"></div>
+                      <div class="cube2"></div>
+                    </span>
+                </span>
+            </span>
+        </span>
+        
+        
+    </div>
+    
+    <div class="toc-ref">
+    
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#设计模式详解"><span class="toc-text">设计模式详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#行为性-Behavioral"><span class="toc-text">行为性(Behavioral)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#13-策略模式-Strategy"><span class="toc-text">13.策略模式(Strategy)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#适用场景"><span class="toc-text">适用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色"><span class="toc-text">包含角色</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优点与缺点"><span class="toc-text">优点与缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#14-模板方法模式-Template-Method"><span class="toc-text">14.模板方法模式(Template Method)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景："><span class="toc-text">应用场景：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#模板模式的优缺点"><span class="toc-text">模板模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#15-责任链模式-Chain-of-Responsibility"><span class="toc-text">15.责任链模式(Chain of Responsibility)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景"><span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色-1"><span class="toc-text">包含角色</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优点与缺点-1"><span class="toc-text">优点与缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#16-状态模式-State"><span class="toc-text">16.状态模式(State)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景-1"><span class="toc-text">应用场景</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色-2"><span class="toc-text">包含角色</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#区分状态与责任链"><span class="toc-text">区分状态与责任链</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#区分状态与策略"><span class="toc-text">区分状态与策略</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#状态模式的优缺点"><span class="toc-text">状态模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#17-观察者模式-Observer"><span class="toc-text">17.观察者模式(Observer)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色-3"><span class="toc-text">包含角色:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#观察者模式的优缺点"><span class="toc-text">观察者模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#18-解释器模式-Interpreter"><span class="toc-text">18.解释器模式(Interpreter)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#19-迭代器模式-Iterator"><span class="toc-text">19.迭代器模式(Iterator)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色："><span class="toc-text">包含角色：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#优缺点"><span class="toc-text">优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#20-中介者模式-Mediator"><span class="toc-text">20.中介者模式(Mediator)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#21-命令模式-Command"><span class="toc-text">21.命令模式(Command)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#包含四种角色："><span class="toc-text">包含四种角色：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#命令模式的优缺点"><span class="toc-text">命令模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#22-访问者模式-Visitor"><span class="toc-text">22.访问者模式(Visitor)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#适用场景："><span class="toc-text">适用场景：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#主要包含五种角色"><span class="toc-text">主要包含五种角色:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#从静态分派到动态分派"><span class="toc-text">从静态分派到动态分派</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#1、静态分派"><span class="toc-text">1、静态分派</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2、动态分派"><span class="toc-text">2、动态分派</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#访问者模式中的伪动态双分派"><span class="toc-text">访问者模式中的伪动态双分派</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#访问者模式的优缺点"><span class="toc-text">访问者模式的优缺点</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#23-备忘录模式-Memento"><span class="toc-text">23.备忘录模式(Memento)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#应用场景：-1"><span class="toc-text">应用场景：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#包含角色：-1"><span class="toc-text">包含角色：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#备忘录模式的优缺点"><span class="toc-text">备忘录模式的优缺点</span></a></li></ol></li></ol></li></ol></li></ol>
+    
+<style>
+    .left-col .switch-btn,
+    .left-col .switch-area {
+        display: none;
+    }
+    .toc-level-3 i,
+    .toc-level-3 ol {
+        display: none !important;
+    }
+</style>
+</div>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h1 id="设计模式详解"><a href="#设计模式详解" class="headerlink" title="设计模式详解"></a>设计模式详解</h1><p><em>GoF的设计模式是 Java基础知识和 J2EE框架知识之间一座隐形桥梁</em></p>
+<h2 id="行为性-Behavioral"><a href="#行为性-Behavioral" class="headerlink" title="行为性(Behavioral)"></a>行为性(Behavioral)</h2><h3 id="13-策略模式-Strategy"><a href="#13-策略模式-Strategy" class="headerlink" title="13.策略模式(Strategy)"></a>13.策略模式(Strategy)</h3><p><code>定义：策略模式(Strategy Pattern )又叫也叫政策模式(Policy Pattern ),它是将定义的算法家族、分别封装起来，让它们之间可以互相替换，从而让算法的变化不会影响到使用算法的用户。属于行为型模式。</code></p>
+<p><em>策略模式使用的就是面向对象的继承和多态机制，从而实现同一行为在不同场景下具备不同实现。</em></p>
+<h4 id="适用场景"><a href="#适用场景" class="headerlink" title="适用场景"></a>适用场景</h4><blockquote>
+<p>策略模式可以解决在有多种算法相似的情况下，使用if.・・else或switch…case所带来的复杂性</p>
+<p>1，针对同一类型问题，有多种处理方式，每一种都能独立解决问题；</p>
+<p>2，算法需要自由切换的场景；</p>
+<p>3，需要屏蔽算法规则的场景。</p>
+</blockquote>
+<h4 id="包含角色"><a href="#包含角色" class="headerlink" title="包含角色"></a>包含角色</h4><blockquote>
+<p>上下文角色(Context):用来操作策略的上下文环境，屏蔽高层模块(客户端)对策略<strong>，</strong>算法的直接访问，封装可能存在变化。</p>
+<p>具体策略角色(Concretestrategy ):具体的策略或算法实现。</p>
+<p>抽象策略角色(Strategy ):规定策略或算法的行为；</p>
+</blockquote>
+<p>例子：JDK—&gt;Comparator;Arrays.parallelsort();TreeMap;</p>
+<p>​           Spring—&gt;Resource;</p>
+<h4 id="优点与缺点"><a href="#优点与缺点" class="headerlink" title="优点与缺点"></a>优点与缺点</h4><blockquote>
+<p>优点：</p>
+<p>1，策略模式符合开闭原则。</p>
+<p>2，避免使用多重条件转移语句，如if..・else…语句、switch语句。</p>
+<p>3，使用策略模式可以提高算法的保密性和安全性。</p>
+<p>缺点：</p>
+<p>1，客户端必须知道所有的策略<strong>，</strong>并且自行决定使用哪一个策略类。</p>
+<p>2、代码中会产生非常多策略美，增加维护难度。</p>
+</blockquote>
+<h3 id="14-模板方法模式-Template-Method"><a href="#14-模板方法模式-Template-Method" class="headerlink" title="14.模板方法模式(Template Method)"></a>14.模板方法模式(Template Method)</h3><p>​      <em>模板模式通常又叫模板方法模式（Template Method Pattern）是指定义一个算法的骨架，并允许子类为一个或者多个步骤提供实现。模板方法使得子类可以在不改变算法结构的情况下，重新定义算法的某些步骤，属于行为性设计模式。</em></p>
+<h4 id="应用场景："><a href="#应用场景：" class="headerlink" title="应用场景："></a>应用场景：</h4><blockquote>
+<p>1、一次性实现一个算法的不变的部分，并将可变的行为留给子类来实现。 </p>
+<p>2、各子类中公共的行为被提取出来并集中到一个公共的父类中，从而避免代码重复。</p>
+</blockquote>
+<p>例子：JDK 中的 AbstractList —&gt; ArrayList 就 是 AbstractList 的 子 类</p>
+<p>​           MyBatis中的BaseExecutor 类</p>
+<h4 id="模板模式的优缺点"><a href="#模板模式的优缺点" class="headerlink" title="模板模式的优缺点"></a>模板模式的优缺点</h4><blockquote>
+<p>优点： </p>
+<p>1、利用模板方法将相同处理逻辑的代码放到抽象父类中，可以提高代码的复用性。 </p>
+<p>2、将不同的代码不同的子类中，通过对子类的扩展增加新的行为，提高代码的扩展性。 </p>
+<p>3、把不变的行为写在父类上，去除子类的重复代码，提供了一个很好的代码复用平台， </p>
+<p>符合开闭原则。 </p>
+<p>缺点： </p>
+<p>1、类数目的增加，每一个抽象类都需要一个子类来实现，这样导致类的个数增加。 </p>
+<p>2、类数量的增加，间接地增加了系统实现的复杂度。 </p>
+<p>3、继承关系自身缺点，如果父类添加新的抽象方法，所有子类都要改一遍。 </p>
+</blockquote>
+<h3 id="15-责任链模式-Chain-of-Responsibility"><a href="#15-责任链模式-Chain-of-Responsibility" class="headerlink" title="15.责任链模式(Chain of Responsibility)"></a>15.责任链模式(Chain of Responsibility)</h3><p><code>责任链模式(Chain of Responsibility Pattern )是将链中每一个节点看作是一个对象,每个节点处理的请求均不同，且内部自动维护一个下一节点对象。当一个请求从链式的首端发出时，会沿看链的路径 依次传递给每一个节点对象，直至有对象处理这个请求为止。属于行为型模式。</code></p>
+<h4 id="应用场景"><a href="#应用场景" class="headerlink" title="应用场景"></a>应用场景</h4><blockquote>
+<p>1、多个对象可以处理同一请求，但具体由哪个对象处理则在运行时动态决定；</p>
+<p>2、在不明确指定接收者的情况下,向多个对象中的一个提交一个请求；</p>
+<p>3、可动态指定一组对象处理请求。</p>
+</blockquote>
+<h4 id="包含角色-1"><a href="#包含角色-1" class="headerlink" title="包含角色"></a>包含角色</h4><blockquote>
+<p>抽象处理者（Handler）:定义一个请求处理的方法，并维护一个下一个处理节点Handler对象的 引用；</p>
+<p>具体处理者（ConcreteHandler）:对请求进行处理，如果不感兴趣，则进行转发。</p>
+</blockquote>
+<p><em>责任链模式的本质是解耦请求与处理，让请求在处理链中能进行传递与被处理；理解责任链模式应当理解的是其模式（道）而不是其具体实现（术），责任链模式的独到之处是其将节点处理者组合成了 链式结构，并允许节点自身决定是否进行请求处理或转发，相当于让请求流动了起来。</em></p>
+<p>例子：JDK—&gt;Filter：在doFilterO方法的最后一个参数其类型是 FilterChain类；</p>
+<p>​           Spring的实现 MockFilterChain类；</p>
+<p>​            Netty的责任处理器接口 ChannelHandler；</p>
+<h4 id="优点与缺点-1"><a href="#优点与缺点-1" class="headerlink" title="优点与缺点"></a>优点与缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    将请求与处理解耦；</p>
+<p>2、    请求处理者(节点对象)只需关注自己感兴趣的请求进行处理即可，对于不感兴趣的请求，直接转 发给下一级节点对象；</p>
+<p>3、    具备链式传递处理请求功能，请求发送者无需知晓链路结构，只需等待请求处理结果；</p>
+<p>4、    链路结构灵活，可以通过改变链路结构动态地新增或删减责任;</p>
+<p>5、    易于扩展新的请求处理类（节点），符合开闭原则。</p>
+<p>缺点：</p>
+<p>1、    责任链太长或者处理时间过长，会影响整体性能</p>
+<p>2、    如果节点对象存在循环引用时，会造成死循环，导致系统崩溃；</p>
+</blockquote>
+<h3 id="16-状态模式-State"><a href="#16-状态模式-State" class="headerlink" title="16.状态模式(State)"></a>16.状态模式(State)</h3><p><code>状态模式(State Pattern )也称为状态机模式(State Machine Pattern),是允许对象在内部状态发生改变时改变它的行为,对象看起来好像修改了它的类，属于行为型模式。</code></p>
+<p>​         <em>状态模式中类的行为是由状态决定的，不同的状态下有不同的行为。其意图是让一个对象在 其内部改变的时候，其行为也随之改变。状态模式核心是状态与行为绑定，不同的状态对应不 同的行为。</em></p>
+<p><em>状态模式主要解决的就是当控制一个对象状态的条件表达式过于复杂时的情况。通过把状态 的判断逻辑转移到表示不同状态的一系列类中，可以把复杂的判断逻辑简化。对象的行为依赖于它的状态（属性），并且会根据它的状态改变而改变它的相关行为。</em></p>
+<h4 id="应用场景-1"><a href="#应用场景-1" class="headerlink" title="应用场景"></a>应用场景</h4><blockquote>
+<p>1、行为随状态改变而改变的场景；</p>
+<p>2、一个操作中含有庞大的多分支结构，并且这些分支取决于对象的状态</p>
+</blockquote>
+<h4 id="包含角色-2"><a href="#包含角色-2" class="headerlink" title="包含角色"></a>包含角色</h4><blockquote>
+<p>1、环境类角色（Context ）:定义客户端需要的接口，内部维护一个当前状态实例，并负责具体状态的切换；</p>
+<p>2、抽象状态角色（State ）:定义该状态下的行为，可以有一个或多个行为；</p>
+<p>3、具体状态角色（ConcreteState ）:具体实现该状态对应的行为，并且在需要的情况下进行状态切换。</p>
+</blockquote>
+<p>例子：JSF—&gt;Lifecycle类；</p>
+<h4 id="区分状态与责任链"><a href="#区分状态与责任链" class="headerlink" title="区分状态与责任链"></a>区分状态与责任链</h4><blockquote>
+<p>状态模式和责任链模式都能消除if分支过多的问题。但某些情况下，状态模式中的状态可以理解为责任，那么这种情况下,两种模式都可以使用。</p>
+<p>从定义来看，状态模式强调的是一个对象内在状态的改变，而责任链模式强调的是外部节点对象间的改变。</p>
+<p>从其代码实现上来看，他们间最大的区别就是状态模式各个状态对象知道自己下一个要进入的状态对象；而责任链模式并不清楚其下一个节点处理对象，因为链式组装由客户端负责。</p>
+</blockquote>
+<h4 id="区分状态与策略"><a href="#区分状态与策略" class="headerlink" title="区分状态与策略"></a>区分状态与策略</h4><blockquote>
+<p>状态模式和策略模式的UML类图架构几乎完全一样，但他们的应用场景是不一样的。策略模式多种算法行为择其一都能满足，彼此之间是独立的，用户可自行更换策略算法；而状态模式各个状态间是存在相互关系的，彼此之间在一定条件下存在自动切换状态效果，且用户无法指定状态，只能设置初始状态。</p>
+</blockquote>
+<h4 id="状态模式的优缺点"><a href="#状态模式的优缺点" class="headerlink" title="状态模式的优缺点"></a>状态模式的优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    结构清晰：将状态独立为类，消除了冗余的if…else或switch…case语句，使代码更加简洁, 提高系统可维护性；</p>
+<p>2、    将状态转换显示化：通常的对象内部都是使用数值类型来定义状态，状态的切换是通过赋值进行表现，不够直观；而使用状态类，在切换状态时，是以不同的类进行表示，转换目的更加明确；</p>
+<p>3、    状态类职责明确且具备扩展性。</p>
+<p>缺点：</p>
+<p>1、    类膨胀：如果一个事物具备很多状态，则会造成状态类太多；</p>
+<p>2、    状态模式的结构与实现都较为复杂，如果使用不当将导致程序结构和代码的混乱；</p>
+<p>3、    状态模式对开闭原则的支持并不太好，对于可以切换状态的状态模式，増加新的状态类需要 修改那些负责状态转换的源代码，否则无法切换到新增状态，而且修改某个状态类的行为也需修改对应类的源代码.</p>
+</blockquote>
+<h3 id="17-观察者模式-Observer"><a href="#17-观察者模式-Observer" class="headerlink" title="17.观察者模式(Observer)"></a>17.观察者模式(Observer)</h3><p><code>观察者模式(Observer Pattern ),又叫发布-订阅(Publish/Subscribe )模式、模型-视图(Model/View )模式、源-监听器(Source/Listener)模式或从属者(Dependents )模式。定义一种一对多的依赖关系，一个主题对象可被多个观察者对象同时监听，使得每当主题对象状态变化时,所有依赖于它的对象都会得到通知并被自动更新。属于行为型模式。</code></p>
+<p>​       <em>观察者模式的核心是将观察者与被观察者解耦，以类似于消息/广播发送的机制联动两者，使被观察者的变动能通知到感兴趣的观察者们,从而做出相应的响应。</em></p>
+<p><strong><em>在软件系统中，当系统一方行为依赖于另一方行为的变动时，可使用观察者模式松耦合联动双方， 使得一方的变动可以通知到感兴趣的另一方对象，从而让另一方对象对此做出响应。观察者模式适用于 以下几种应用场景：</em></strong></p>
+<blockquote>
+<p>1、    当一个抽象模型包含两个方面内容，其中一个方面依赖于另一个方面；</p>
+<p>2、    其他一个或多个对象的变化依赖于另一个对象的变化；</p>
+<p>3、    实现类似广播机制的功能,无需知道具体收听者，只需分发广播,系统中感兴趣的对象会自动接 收该广播；</p>
+<p>4、    多层级嵌套使用，形成一种链式触发机制，使得事件具备跨域（跨越两种观察者类型）通知。</p>
+</blockquote>
+<h4 id="包含角色-3"><a href="#包含角色-3" class="headerlink" title="包含角色:"></a>包含角色:</h4><blockquote>
+<p>抽象主题(Subject):指被观察的对象(Observable )。该角色是一个抽象类或接口 ,定义了增 加、删除、通知观察者对象的方法；</p>
+<p>具体主题(ConcreteSubject):具体被观察者，当其内状态变化时，会通知已注册的观察者；</p>
+<p>抽象观察者(Observer):定义了响应通知的更新方法；</p>
+<p>具体观察者(ConcrereObserver):在得到状态更新时,会自动做岀响应。</p>
+</blockquote>
+<p>例子：Spring 中的 ContextLoaderListener 实现了 ServletContextListener 接 口，ServletContextListener 接口又继承了 EventListener；</p>
+<p>​             在 JDK 中 EventListener 有非常广泛的应用；</p>
+<h4 id="观察者模式的优缺点"><a href="#观察者模式的优缺点" class="headerlink" title="观察者模式的优缺点"></a>观察者模式的优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    观察者和被观察者是松耦合(抽象耦合)的,符合依赖倒置原则；</p>
+<p>2、    分离了表示层(观察者)和数据逻辑层(被观察者),并且建立了一套触发机制,使得数据的变</p>
+<p>化可以响应到多个表示层上；</p>
+<p>3、    实现了一对多的通讯机制，支持事件注册机制，支持兴趣分发机制，当被观察者触发事件时，只</p>
+<p>有感兴趣的观察者可以接收到通知。</p>
+<p>缺点：</p>
+<p>1、    如果观察者数量过多，则事件通知会耗时较长；</p>
+<p>2、    事件通知呈线性关系，如果其中一个观察者处理事件卡壳，会影响后续的观察者接收该事件；</p>
+<p>3、    如果观察者和被观察者之间存在循环依赖，则可能造成两者之间的循环调用,导致系统崩溃。</p>
+</blockquote>
+<h3 id="18-解释器模式-Interpreter"><a href="#18-解释器模式-Interpreter" class="headerlink" title="18.解释器模式(Interpreter)"></a>18.解释器模式(Interpreter)</h3><h3 id="19-迭代器模式-Iterator"><a href="#19-迭代器模式-Iterator" class="headerlink" title="19.迭代器模式(Iterator)"></a>19.迭代器模式(Iterator)</h3><p><code>迭代器模式(Iterator Pattern )又称为游标模式(Cursor Pattern),它提供一种顺序访问集合/容器对象元素的方法，而又无须暴露集合内部表示。迭代器模式可以为不同的容器提供一致的遍历行为，而不用关心容器内容元素组成结构，属于行为型模式。</code></p>
+<p><em>迭代器模式的本质是抽离集合对象迭代行为到迭代器中，提供一致访问接口。</em></p>
+<p><strong>我们把多个对象聚在一起形成的总体称之为集合(Aggregate),集合对象是能够包容一组对象的容器对象。不同的集合其内部元素的聚合结构可能不同，而迭代器模式屏蔽了内部元素获取细节，为外部提供一致的元素访问行为，解耦了元素迭代与集合对象间的耦合，并且通过提供不同的迭代器，可以为同个集合对象提供不同顺序的元素访问行为，扩展了集合对象元素迭代功能，符合开闭原则。迭代器模式适用于以下场景：</strong></p>
+<blockquote>
+<p>1、    访问一个集合对象的内容而无需暴露它的内部表示；</p>
+<p>2、    为遍历不同的集合结构提供一个统一的访问接口。</p>
+</blockquote>
+<h4 id="包含角色："><a href="#包含角色：" class="headerlink" title="包含角色："></a>包含角色：</h4><blockquote>
+<p>抽象迭代器(Iterator):抽象迭代器负责定义访问和遍历元素的接口 ;</p>
+<p>具体迭代器(Concreteiterator):提供具体的元素遍历行为；</p>
+<p>抽象容器(Aggregate ):负责定义提供具体迭代器的接口 ；</p>
+<p>具体容器(ConcreteAggregate ):创建具体迭代器。</p>
+</blockquote>
+<h4 id="优缺点"><a href="#优缺点" class="headerlink" title="优缺点"></a>优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    多态迭代：为不同的聚合结构提供一致的遍历接口，即一个迭代接口可以访问不同的集合对 象；</p>
+<p>2、    简化集合对象接口 ：迭代器模式将集合对象本身应该提供的元素迭代接口抽取到了迭代器 中，使集合对象无须关心具体迭代行为；</p>
+<p>3、    元素迭代功能多样化：每个集合对象都可以提供一个或多个不同的迭代器，使的同种元素聚 合结构可以有不同的迭代行为；</p>
+<p>4、    解耦迭代与集合：迭代器模式封装了具体的迭代算法，迭代算法的变化，不会影响到集合 对象的架构。</p>
+<p>缺点：</p>
+<p>1、对于比较简单的遍历(像数组或者有序列表)，使用迭代器方式遍历较为繁琐。</p>
+<p>在日常开发当中，我们几乎不会自己写迭代器。除非我们需要定制一个自己实现的数据结构 对应的迭代器，否则，开源框架提供给我们的API完全够用。</p>
+</blockquote>
+<h3 id="20-中介者模式-Mediator"><a href="#20-中介者模式-Mediator" class="headerlink" title="20.中介者模式(Mediator)"></a>20.中介者模式(Mediator)</h3><h3 id="21-命令模式-Command"><a href="#21-命令模式-Command" class="headerlink" title="21.命令模式(Command)"></a>21.命令模式(Command)</h3><p><code>命令模式（Command Pattern）是对命令的封装，每一个命令都是一个操作：请求的一方发出请求要求执行一个操作；接收的一方收到请求，并执行操作。命令模式解耦了请求方和接收方，请求方只需请求执行命令，不用关心命令是怎样被接收，怎样被操作以及是否被执行…等。 命令模式属于行为型模式。</code></p>
+<p><em>在软件系统中，行为请求者与行为实现者通常是一种紧耦合关系，因为这样的实现简单明了。 但紧耦合关系缺乏扩展性，在某些场合中，当需要为行为进行记录，撤销或重做等处理时，只 能修改源码。而命令模式通过为请求与实现间引入一个抽象命令接口，解耦了请求与实现，并且中间件是抽象的，它可以有不同的子类实现，因此其具备扩展性。所以，命令模式的本质是解耦命令请求与处理。</em></p>
+<p><strong>当系统的某项操作具备命令语义时，且命令实现不稳定（变化），那么可以通过命令模式解耦请求与实现，利用抽象命令接口使请求方代码架构稳定，封装接收方具体命令实现细节。接收方与抽象命令接口呈现弱耦合（内部方法无需一致），具备良好的扩展性。命令模式适用于以下应用场景：</strong></p>
+<blockquote>
+<p>1、现实语义中具备〃命令〃的操作（如命令菜单，shell命令…）；</p>
+<p>2、请求调用者和请求的接收者需要解耦,使得调用者和接收者不直接交互； </p>
+<p>3、需要抽象岀等待执行的行为<strong>，</strong>比如撤销（Undo）操作和恢复（Redo）等操作;</p>
+<p>4、需要支持命令宏（即命令组合操作）</p>
+</blockquote>
+<h4 id="包含四种角色："><a href="#包含四种角色：" class="headerlink" title="包含四种角色："></a>包含四种角色：</h4><blockquote>
+<p>接收者角色（Receiver）:该类负责具体实施或执行一个请求;</p>
+<p>命令角色（Command ）:定义需要执行的所有命令行为；</p>
+<p>具体命令角色(ConcreteCommand ）该类内部维护一个接收者（Receiver ），在其execute（） 方法中调用Receiver的相关方法；</p>
+<p>请求者角色（Invoker）:接收客户端的命令，并执行命令。</p>
+</blockquote>
+<p>例子：JDK中的Runnable接口；junit.framework.Test接口</p>
+<p>​           </p>
+<h4 id="命令模式的优缺点"><a href="#命令模式的优缺点" class="headerlink" title="命令模式的优缺点"></a>命令模式的优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1,通过引入中间件（抽象接口），解耦了命令请求与实现;</p>
+<p>2,扩展性良好，可以很容易地増加新命令;</p>
+<p>3,支持组合命令<strong>，</strong>支持命令队列;</p>
+<p>4,可以在现有命令的基础上，增加额外功能（比如日志记录…，结合装饰器模式更酸爽）;</p>
+<p>缺点：</p>
+<p>1、具体命令类可能过多； </p>
+<p>2、命令模式的结果其实就是接收方的执行结果，但是为了以命令的形式进行架构，解耦请求与实现，引入了额外类型结构（引入了请求方与抽象命令接口），增加了理解上的困难（不过这 也是设计模式带来的一个通病，抽象必然会引入额外类型；抽象肯定比紧密难理解）</p>
+</blockquote>
+<h3 id="22-访问者模式-Visitor"><a href="#22-访问者模式-Visitor" class="headerlink" title="22.访问者模式(Visitor)"></a>22.访问者模式(Visitor)</h3><p><code>访问者模式(Visitor Pattern )是一种将数据结构与数据操作分离的设计模式。是指封装一些作用于某种数据结构中的各元素的操作，它可以在不改变数据结构的前提下定义作用于这些元素的新的操作。属于行为型模式。</code></p>
+<p><strong>访问者模式的核心是，解耦数据结构与数据操作，使得对元素的操作具备优秀的扩展性。可 以通过扩展不同的数据操作类型(访问者)实现对相同元素集的不同的操作。</strong></p>
+<h4 id="适用场景："><a href="#适用场景：" class="headerlink" title="适用场景："></a>适用场景：</h4><blockquote>
+<p>1、    数据结构稳定，作用于数据结构的操作经常变化的场景;</p>
+<p>2、    需要数据结构与数据操作分离的场景；</p>
+<p>3、    需要对不同数据类型（元素）进行操作，而不使用分支判断具体类型的场景;</p>
+</blockquote>
+<h4 id="主要包含五种角色"><a href="#主要包含五种角色" class="headerlink" title="主要包含五种角色:"></a>主要包含五种角色:</h4><blockquote>
+<p>抽象访问者(Visitor):接口或抽象类，该类地冠以了对每一个具体元素(Element )的访问行为visit()方法，其参数就是具体的元素(Element)对象。理论上来说,Visitor的方法个 数与元素(Element )个数是相等的。如果元素(Element )个数经常变动，会导致Visitor的 方法也要进行变动，此时，该情形并不适用访问者模式；</p>
+<p>具体访问者(ConcreteVisitor):实现对具体元素的操作；</p>
+<p>抽象元素(Element ):接口或抽象类，定义了一个接受访问者访问的方法acceptQ ,表示 所有元素类型都支持被访问者访问；</p>
+<p>具体元素(Concrete Element ):具体元素类型,提供接受访问者的具体实现。通常的实现都为visitor.visit(this);</p>
+<p>结构对象(ObjectStruture ):该类内部维护了元素集合，并提供方法接受访问者对该集合所有元素进行操作。</p>
+</blockquote>
+<h4 id="从静态分派到动态分派"><a href="#从静态分派到动态分派" class="headerlink" title="从静态分派到动态分派"></a>从静态分派到动态分派</h4><p><strong>变量被声明时的类型叫做变量的静态类型(Static Type),有些人又把静态类型叫做明显类型 (Apparent Type);而变量所引用的对象的真实类型又叫做变量的实际类型(Actual Type)比如：</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List list = <span class="keyword">null</span>;</span><br><span class="line">list = <span class="keyword">new</span> ArrayList();</span><br></pre></td></tr></table></figure>
+
+<p><strong>声明了一个变量list ,它的静态类型(也叫明显类型)是List ,而它的实际类型是ArrayList 根据对象的类型而对方法进行的选择，就是分派(Dispatch).分派又分为两种,即静态分派和动态分派。</strong></p>
+<h5 id="1、静态分派"><a href="#1、静态分派" class="headerlink" title="1、静态分派"></a>1、静态分派</h5><p><code>静态分派(Static Dispatch)就是按照变量的静态类型进行分派，从而确定方法的执行版本， 静态分派在编译时期就可以确定方法的版本。而静态分派最典型的应用就是方法重载，</code></p>
+<p><em>在静态分派判断的时候，我们根据多个判断依据(即参数类型和个数)判断出了方法的版本, 那么这个就是多分派的概念，因为我们有一个以上的考量标准。所以Java是静态多分派的语言。</em></p>
+<h5 id="2、动态分派"><a href="#2、动态分派" class="headerlink" title="2、动态分派"></a>2、动态分派</h5><p><code>对于动态分派，与静态相反，它不是在编译期确定的方法版本，而是在运行时才能确定。而动态分派最典型的应用就是多态的特性。</code></p>
+<h5 id="访问者模式中的伪动态双分派"><a href="#访问者模式中的伪动态双分派" class="headerlink" title="访问者模式中的伪动态双分派"></a>访问者模式中的伪动态双分派</h5><blockquote>
+<p>通过前面分析，我们知道Java是静态多分派、动态单分派的语言。Java底层不支持动态的双分派。但是通过使用设计模式，也可以在Java语言里实现伪动态双分派。在访问者模式中使 用的就是伪动态双分派。所谓动态双分派就是在运行时依据两个实际类型去判断一个方法的运行行为，而访问者模式实现的手段是进行了两次动态单分派来达到这个效果。</p>
+</blockquote>
+<p>例子：JDK的NIO模块下的FileVisitor接口；</p>
+<p>​           Spring中的应用,Spring loC中有个BeanDefinitionVisitor类；</p>
+<h4 id="访问者模式的优缺点"><a href="#访问者模式的优缺点" class="headerlink" title="访问者模式的优缺点"></a>访问者模式的优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    解耦了数据结构与数据操作，使得操作集合可以独立变化；</p>
+<p>2、    扩展性好：可以通过扩展访问者角色，实现对数据集的不同操作；</p>
+<p>3、    元素具体类型并非单一，访问者均可操作；</p>
+<p>4、    各角色职责分离，符合单一职责原则。</p>
+<p>缺点：</p>
+<p>1、无法增加元素类型：若系统数据结构对象易于变化，经常有新的数据对象增加进来，则访问</p>
+<p>者类必须增加对应元素类型的操作，违背了开闭原则；</p>
+<p>2、    具体元素变更困难：具体元素増加属性，删除属性等操作会导致对应的访问者类需要进行相 应的修改，尤其当有大量访问者类时，修改范围太大；</p>
+<p>3、    违背依赖倒置原则：为了达到”区别对待〃，访问者依赖的是具体元素类型，而不是抽象。</p>
+</blockquote>
+<h3 id="23-备忘录模式-Memento"><a href="#23-备忘录模式-Memento" class="headerlink" title="23.备忘录模式(Memento)"></a>23.备忘录模式(Memento)</h3><p><code>备忘录模式(Memento Pattern )又称为快照模式(Snapshot Pattern )或令牌模式(Token Pattern ),是指在不破坏封装的前提下，捕获一个对象的内部状态，并在对象之外保存这个状态。这样以后就可将该对象恢复到原先保存的状态，属于行为型模式。</code></p>
+<p>​         <em>备忘录模式本质是从发起人实体类(Originator)隔离存储功能，降低实体类的职责。同时由于存储信息(Memento )独立，且存储信息的实体交由管理类(Caretaker)管理，则可以通过为管理类扩展额外的功能对存储信息进行扩展操作(比如增加历史快照功能…)。</em></p>
+<h4 id="应用场景：-1"><a href="#应用场景：-1" class="headerlink" title="应用场景："></a>应用场景：</h4><blockquote>
+<p>1、    需要保存历史快照的场景；</p>
+<p>2、    希望在对象之外保存状态，且除了自己其他类对象无法访问状态保存具体内容。</p>
+</blockquote>
+<h4 id="包含角色：-1"><a href="#包含角色：-1" class="headerlink" title="包含角色："></a>包含角色：</h4><blockquote>
+<p>发起人角色(Originator ):负责创建一个备忘录,记录自身需要保存的状态；具备状态回滚功能；</p>
+<p>备忘录角色(Memento ):用于存储Originator的内部状态，且可以防止Originator以外的对象进行访问； </p>
+<p>备忘录管理员角色(Caretaker):负责存储,提供管理备忘录(Memento ),无法对备忘录内容进行操作和访问。</p>
+</blockquote>
+<p>例子：Spring的webflow源码一个 StateManageableMessageContext 接口 </p>
+<h4 id="备忘录模式的优缺点"><a href="#备忘录模式的优缺点" class="headerlink" title="备忘录模式的优缺点"></a>备忘录模式的优缺点</h4><blockquote>
+<p>优点：</p>
+<p>1、    简化发起人实体类(Originator )职责,隔离状态存储与获取，实现了信息的封装，客户端无需关心状态的保存细节:</p>
+<p>2、    提供状态回滚功能；</p>
+<p>缺点：</p>
+<p>1、消耗资源：如果需要保存的状态过多时，每一次保存都会消耗很多内存。</p>
+</blockquote>
+<p><img src="/index/img/image/1586156669961.png" alt="1586156669961"></p>
+
+      
+       <hr><span style="font-style: italic;color: gray;"> 转载请注明来源，欢迎对文章中的引用来源进行考证，欢迎指出任何有错误或不够清晰的表达。可以在下面评论区评论，也可以邮件至 944969397@qq.com </span>
+    </div>
+</article>
+
+
+<p>
+    <a  class="dashang" onclick="dashangToggle()">赏</a>
+</p>
+
+
+<div class="article_copyright">
+    <p><span class="copy-title">文章标题:</span>设计模式第三篇-行为性</p>
+    
+    <p><span class="copy-title">本文作者:</span><a  title="陈汉杰">陈汉杰</a></p>
+    <p><span class="copy-title">发布时间:</span>2020-03-25, 15:13:47</p>
+    <p><span class="copy-title">最后更新:</span>2020-05-12, 14:22:48</p>
+    <span class="copy-title">原始链接:</span><a class="post-url" href="/index/2020/03/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%89%E7%AF%87-%E8%A1%8C%E4%B8%BA%E6%80%A7/" title="设计模式第三篇-行为性">http://chj-yeah.github.io/index/2020/03/25/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E7%AC%AC%E4%B8%89%E7%AF%87-%E8%A1%8C%E4%B8%BA%E6%80%A7/</a>
+    <p>
+        <span class="copy-title">版权声明:</span><i class="fa fa-creative-commons"></i> <a rel="license noopener" href="http://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" title="CC BY-NC-SA 4.0 International" target = "_blank">"署名-非商用-相同方式共享 4.0"</a> 转载请保留原文链接及作者。
+    </p>
+</div>
+
+
+
+
+
+    
+
+
+
+
+    </div>
+    <div class="copyright">
+        <p class="footer-entry">©2016-2019 Yelog</p>
+<p class="footer-entry">Built with <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/yelog/hexo-theme-3-hexo" target="_blank">3-hexo</a> theme</p>
+
+    </div>
+    <div class="full-toc">
+        <button class="full"><span class="min "></span></button>
+<button class="post-toc-menu"><span class="post-toc-menu-icons"></span></button>
+<div class="post-toc"><span class="post-toc-title">目录</span>
+    <div class="post-toc-content">
+
+    </div>
+</div>
+<a class="" id="rocket" ></a>
+
+    </div>
+</div>
+<div class="acParent"></div>
+
+<div class="hide_box" onclick="dashangToggle()"></div>
+<div class="shang_box">
+    <a class="shang_close"  onclick="dashangToggle()">×</a>
+    <div class="shang_tit">
+        <p>喜欢就点赞,疼爱就打赏</p>
+    </div>
+    <div class="shang_payimg">
+        <div class="pay_img">
+            <img src="/index/img/alipay.jpg" class="alipay" title="扫码支持">
+            <img src="/index/img/weixin.jpg" class="weixin" title="扫码支持">
+        </div>
+    </div>
+    <div class="shang_payselect">
+        <span><label><input type="radio" name="pay" checked value="alipay">支付宝</label></span><span><label><input type="radio" name="pay" value="weixin">微信</label></span>
+    </div>
+</div>
+
+
+</body>
+<script src="/index/js/jquery.pjax.js?v=1.0.1" ></script>
+
+<script src="/index/js/script.js?v=1.0.1" ></script>
+<script>
+    var img_resize = 'default';
+    /*作者、标签的自动补全*/
+    $(function () {
+        $('.search').AutoComplete({
+            'data': ['#java','#Netty','#hexo','#mybatis','#Spring','#设计模式','#docker',],
+            'itemHeight': 20,
+            'width': 418
+        }).AutoComplete('show');
+    })
+    function initArticle() {
+        /*渲染对应的表格样式*/
+        
+            $(".post .pjax table").addClass("green_title");
+        
+
+        /*渲染打赏样式*/
+        
+        $("input[name=pay]").on("click", function () {
+            if($("input[name=pay]:checked").val()=="weixin"){
+                $(".shang_box .shang_payimg .pay_img").addClass("weixin_img");
+            } else {
+                $(".shang_box .shang_payimg .pay_img").removeClass("weixin_img");
+            }
+        })
+        
+
+        /*高亮代码块行号*/
+        
+        $('pre code').each(function(){
+            var lines = $(this).text().split('\n').length - 1, widther='';
+            if (lines>99) {
+                widther = 'widther'
+            }
+            var $numbering = $('<ul/>').addClass('pre-numbering ' + widther).attr("unselectable","on");
+            $(this).addClass('has-numbering ' + widther)
+                    .parent()
+                    .append($numbering);
+            for(var i=1;i<=lines;i++){
+                $numbering.append($('<li/>').text(i));
+            }
+        });
+        
+
+        /*访问数量*/
+        
+        $.getScript("//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js");
+        
+
+        /*代码高亮，行号对齐*/
+        $('.pre-numbering').css('line-height',$('.has-numbering').css('line-height'));
+
+        
+        
+    }
+
+    /*打赏页面隐藏与展示*/
+    
+    function dashangToggle() {
+        $(".shang_box").fadeToggle();
+        $(".hide_box").fadeToggle();
+    }
+    
+
+</script>
+
+<!--加入行号的高亮代码块样式-->
+
+<style>
+    pre{
+        position: relative;
+        margin-bottom: 24px;
+        border-radius: 10px;
+        border: 1px solid #e2dede;
+        background: #FFF;
+        overflow: hidden;
+    }
+    code.has-numbering{
+        margin-left: 30px;
+    }
+    code.has-numbering.widther{
+        margin-left: 35px;
+    }
+    .pre-numbering{
+        margin: 0px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        padding: 0.5em 3px 0.7em 5px;
+        border-right: 1px solid #C3CCD0;
+        text-align: right;
+        color: #AAA;
+        background-color: #fafafa;
+    }
+    .pre-numbering.widther {
+        width: 35px;
+    }
+</style>
+
+<!--自定义样式设置-->
+<style>
+    
+    
+    .nav {
+        width: 542px;
+    }
+    .nav.fullscreen {
+        margin-left: -542px;
+    }
+    .nav-left {
+        width: 120px;
+    }
+    
+    
+    @media screen and (max-width: 1468px) {
+        .nav {
+            width: 492px;
+        }
+        .nav.fullscreen {
+            margin-left: -492px;
+        }
+        .nav-left {
+            width: 100px;
+        }
+    }
+    
+    
+    @media screen and (max-width: 1024px) {
+        .nav {
+            width: 492px;
+            margin-left: -492px
+        }
+        .nav.fullscreen {
+            margin-left: 0;
+        }
+        .nav .hide-list.fullscreen {
+            left: 492px
+        }
+    }
+    
+    @media screen and (max-width: 426px) {
+        .nav {
+            width: 100%;
+        }
+        .nav-left {
+            width: 100%;
+        }
+    }
+    
+    
+    .nav-right .title-list nav a .post-title, .nav-right .title-list #local-search-result a .post-title {
+        color: #383636;
+    }
+    
+    
+    .nav-right .title-list nav a .post-date, .nav-right .title-list #local-search-result a .post-date {
+        color: #5e5e5f;
+    }
+    
+    
+    .nav-right nav a.hover, #local-search-result a.hover{
+        background-color: #e2e0e0;
+    }
+    
+    
+
+    /*列表样式*/
+    
+    .post .pjax article .article-entry>ol, .post .pjax article .article-entry>ul, .post .pjax article>ol, .post .pjax article>ul{
+        border: #e2dede solid 1px;
+        border-radius: 10px;
+        padding: 10px 32px 10px 56px;
+    }
+    .post .pjax article .article-entry li>ol, .post .pjax article .article-entry li>ul,.post .pjax article li>ol, .post .pjax article li>ul{
+        padding-top: 5px;
+        padding-bottom: 5px;
+    }
+    .post .pjax article .article-entry>ol>li, .post .pjax article .article-entry>ul>li,.post .pjax article>ol>li, .post .pjax article>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    .post .pjax article .article-entry li>ol>li, .post .pjax article .article-entry li>ul>li,.post .pjax article li>ol>li, .post .pjax article li>ul>li{
+        margin-bottom: auto;
+        margin-left: auto;
+    }
+    
+
+    /* 背景图样式 */
+    
+    
+
+
+    /*引用块样式*/
+    
+
+    /*文章列表背景图*/
+    
+    .nav-right:before {
+        content: ' ';
+        display: block;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        opacity: 0.3;
+        background: url("/index/img/beijing.png");
+        background-repeat: no-repeat;
+        background-position: 50% 0;
+        -ms-background-size: cover;
+        -o-background-size: cover;
+        -moz-background-size: cover;
+        -webkit-background-size: cover;
+        background-size: cover;
+    }
+    
+
+    
+</style>
+
+
+
+
+
+
+
+</html>
